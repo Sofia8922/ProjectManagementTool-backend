@@ -6,13 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 
 public record CommentShortDTO(
     @NotBlank(message = "Content is required")
-    String content,
-    Account author
+    String content
 ) {
     public static CommentShortDTO fromEntity(Comment comment) {
         return new CommentShortDTO(
-            comment.getContent(),
-            comment.getAuthor()
+            comment.getContent()
         );
     }
 }

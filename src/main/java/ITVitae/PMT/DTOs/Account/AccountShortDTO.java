@@ -15,16 +15,14 @@ public record AccountShortDTO(
         @NotBlank(message = "Password is required")
         String password,
         @NotNull(message = "Role is required")
-        Account.UserRole role,
-        List<CommentShortDTO> comments
+        Account.UserRole role
 ) {
     public static AccountShortDTO fromEntity(Account account) {
         return new AccountShortDTO(
                 account.getName(),
                 account.getEmail(),
                 account.getPassword(),
-                account.getRole(),
-                account.getCommentList().stream().map(CommentShortDTO::fromEntity).toList()
+                account.getRole()
         );
     }
 }
