@@ -12,6 +12,7 @@ import ITVitae.PMT.services.TaskService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.stereotype.Component;
 
 import static ITVitae.PMT.miscellaneous.Constants.UserRole.*;
@@ -32,7 +33,6 @@ public class DummyData {
     }
 
     @PostConstruct
-    @Transactional
     public void createDummyData() {
         //account
         AccountCreateDTO[] dummyAccounts = {
@@ -56,15 +56,15 @@ public class DummyData {
             new TaskCreateDTO("FAQ", "just a basic FAQ page", 3L, 1L)
         };
         for (TaskCreateDTO tcd : dummyTasks) taskService.createTask(tcd);
-//        TaskEditDTO[] editDummyTasks = {
-//            new TaskEditDTO("#", "#", "COMPLETED"),
-//            new TaskEditDTO("#", "#", "IN_PROGRESS")
-//        };
-//        Long index = 1L;
-//        for (TaskEditDTO ted : editDummyTasks) {
-//            taskService.editTask(index, ted);
-//            index++;
-//        }
+        TaskEditDTO[] editDummyTasks = {
+            new TaskEditDTO("#", "#", "COMPLETED"),
+            new TaskEditDTO("#", "#", "IN_PROGRESS")
+        };
+        Long index = 1L;
+        for (TaskEditDTO ted : editDummyTasks) {
+            taskService.editTask(index, ted);
+            index++;
+        }
         //comments
         CommentCreateDTO[] dummyComments = {
             new CommentCreateDTO("Good morning", 1L, 2L),
