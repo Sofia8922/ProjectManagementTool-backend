@@ -10,11 +10,13 @@ import ITVitae.PMT.models.Task;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
 import ITVitae.PMT.repositories.TaskRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,6 +60,7 @@ public class TaskService {
                 .orElse(null);
     }
 
+    @Transactional
     public TaskDTO editTask(Long id, TaskEditDTO editDTO) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task id not found"));
