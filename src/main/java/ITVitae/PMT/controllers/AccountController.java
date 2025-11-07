@@ -1,7 +1,10 @@
 package ITVitae.PMT.controllers;
 
+import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
 import ITVitae.PMT.DTOs.Account.AccountDTO;
+import ITVitae.PMT.DTOs.Account.AccountEditDTO;
 import ITVitae.PMT.services.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,13 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @PostMapping()
+    public ResponseEntity<AccountDTO> postAccount(@Valid @RequestBody AccountCreateDTO createDTO)
+    {
+        AccountDTO created = accountService.createAccount(createDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(created);
+    }
+
     @GetMapping()
     public ResponseEntity<List<AccountDTO>> getAllAccounts()
     {
@@ -32,5 +42,19 @@ public class AccountController {
     {
         AccountDTO accountDTO = accountService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
+    }
+
+    @GetMapping("/{id}/{password}")
+    public ResponseEntity<Boolean> loginAccount(@PathVariable Long id, @PathVariable String password)
+    {
+        Boolean success = accountService.attemptLogin(id, password);
+        return ResponseEntity.status(HttpStatus.OK).body(success);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO)
+    {
+        AccountDTO created = accountService.editAccount(id, editDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 }

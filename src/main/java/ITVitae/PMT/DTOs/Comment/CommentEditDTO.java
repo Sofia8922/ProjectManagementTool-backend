@@ -4,13 +4,9 @@ import ITVitae.PMT.models.Comment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CommentCreateDTO (
+public record CommentEditDTO(
         @NotBlank(message = "Content is required")
-        String content,
-        @NotNull(message = "Comment must have an author")
-        Long authorId,
-        @NotNull(message = "Comment must have a task")
-        Long taskId
+        String content
 ) {
     public Comment toEntity() {
         Comment comment = new Comment();
