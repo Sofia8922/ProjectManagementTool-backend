@@ -1,17 +1,21 @@
 package ITVitae.PMT.models;
 
-import ITVitae.PMT.repositories.AccountRepository;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Comment {
     @Id
     @GeneratedValue
     private Long id;
+    @NotBlank(message = "comment must have content")
+    private String content;
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Account author;
-    private String content;
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
 
     public Comment() {
 
@@ -35,5 +39,11 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Task getTask() { return task; }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }

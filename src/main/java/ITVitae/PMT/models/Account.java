@@ -1,31 +1,33 @@
 package ITVitae.PMT.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import ITVitae.PMT.miscellaneous.Constants;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Account {
-    public enum UserRole { CUSTOMER, DEVELOPER, OWNER};
     @Id
     @GeneratedValue
     private Long id;
-    @NotBlank
     private String name;
     @NotBlank
     private String email;
     @NotBlank
     private String password;
+    //assigned project
     @NotNull
-    private Account.UserRole role;
-    @OneToMany(mappedBy = "author")
+    private Constants.UserRole role;
+    @ManyToMany(mappedBy = "assignedDevelopers")
+    private List<Task> assignedTasks = new ArrayList<>();
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "taskCreator")
+    private List<Task> madeTaskList = new ArrayList<>();
+    @OneToMany(mappedBy = "projectCreator")
+    private List<Project> madeProjectList = new ArrayList<>();
 
     public Account() {
 
@@ -59,11 +61,11 @@ public class Account {
         this.password = password;
     }
 
-    public UserRole getRole() {
+    public Constants.UserRole getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(Constants.UserRole role) {
         this.role = role;
     }
 
@@ -71,7 +73,13 @@ public class Account {
         return commentList;
     }
 
-    public void addComment(Comment comment) {
-        this.commentList.add(comment);
+    public List<Task> getMadeTaskList() {
+        return madeTaskList;
+    }
+
+    public List<Task> getAssignedTasks() { return assignedTasks; }
+
+    public List<Project> getMadeProjectList() {
+        return madeProjectList;
     }
 }
