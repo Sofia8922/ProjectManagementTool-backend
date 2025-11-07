@@ -1,12 +1,10 @@
 package ITVitae.PMT.controllers;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
 import ITVitae.PMT.DTOs.Account.AccountDTO;
-import ITVitae.PMT.DTOs.Comment.CommentCreateDTO;
-import ITVitae.PMT.DTOs.Comment.CommentDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
+import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.services.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +43,27 @@ public class ProjectController {
     {
         ProjectDTO projectDTO = projectService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(projectDTO);
+    }
+
+    @GetMapping("/accounts/{id}")
+    public ResponseEntity<List<ProjectDTO>> getProjectByAccount(@PathVariable Long id)
+    {
+        List<ProjectDTO> commentDTO = projectService.findByAccountId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDTO);
+    }
+
+    @GetMapping("/{id}/developers")
+    public ResponseEntity<List<AccountDTO>> getProjectDevelopers(@PathVariable Long id)
+    {
+        List<AccountDTO> accountDTOs = projectService.findProjectDevelopers(id);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
+    }
+
+    @GetMapping("/{id}/clients")
+    public ResponseEntity<List<AccountDTO>> getProjectClients(@PathVariable Long id)
+    {
+        List<AccountDTO> accountDTOs = projectService.findProjectDevelopers(id);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
     }
 
     @PutMapping("/{id}")

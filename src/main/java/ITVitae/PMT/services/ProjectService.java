@@ -1,5 +1,6 @@
 package ITVitae.PMT.services;
 
+import ITVitae.PMT.DTOs.Account.AccountDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +53,27 @@ public class ProjectService {
         return projectRepository.findById(id)
             .map(ProjectDTO::fromEntity)
             .orElse(null);
+    }
+
+    public List<ProjectDTO> findByAccountId(Long id) {
+        List<ProjectDTO> allTaskDTOs = findAll();
+        List<ProjectDTO> outputTaskDTOs = new ArrayList<>();
+        for(ProjectDTO tdto : allTaskDTOs) if (tdto.projectCreator().id().equals(id)) outputTaskDTOs.add(tdto);
+        return outputTaskDTOs;
+    }
+
+    public List<AccountDTO> findProjectDevelopers(Long id) {
+        ProjectDTO projectDTO = findById(id);
+        //put developerlist in DTO. ProjectDTO might be null!
+        List<AccountDTO> developerDTOs = new ArrayList<>();
+        return developerDTOs;
+    }
+
+    public List<AccountDTO> findProjectClients(Long id) {
+        ProjectDTO projectDTO = findById(id);
+        //put clientlist in DTO. ProjectDTO might be null!
+        List<AccountDTO> clientDTOs = new ArrayList<>();
+        return clientDTOs;
     }
 
     public ProjectDTO editProject(Long id, ProjectEditDTO editDTO) {

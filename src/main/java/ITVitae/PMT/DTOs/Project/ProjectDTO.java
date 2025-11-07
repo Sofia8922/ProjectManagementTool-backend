@@ -1,5 +1,6 @@
 package ITVitae.PMT.DTOs.Project;
 
+import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Task.TaskShortDTO;
 import ITVitae.PMT.models.Project;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,8 @@ public record ProjectDTO (
     String name,
     String description,
     List<TaskShortDTO> tasks,
-    boolean scrappedStatus
+    boolean scrappedStatus,
+    AccountShortDTO projectCreator
     ){
     public static ProjectDTO fromEntity(Project project) {
         return new ProjectDTO(
@@ -22,7 +24,8 @@ public record ProjectDTO (
                 project.getName(),
                 project.getDescription(),
                 project.getTasks().stream().map(TaskShortDTO::fromEntity).toList(),
-                project.isStatusScrapped()
+                project.isStatusScrapped(),
+                AccountShortDTO.fromEntity(project.getCreator())
         );
     }
 }
