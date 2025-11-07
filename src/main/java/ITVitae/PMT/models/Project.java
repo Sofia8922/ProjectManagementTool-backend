@@ -79,4 +79,12 @@ public class Project {
     public void setCreator(Account creator) {
         this.projectCreator = creator;
     }
+
+    public List<Account> getDevelopers() {
+        return developers;
+    }
+
+    public List<Account> getCustomers() {
+        return customers;
+    }
 }
