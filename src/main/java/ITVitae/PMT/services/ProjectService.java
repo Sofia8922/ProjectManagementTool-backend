@@ -1,6 +1,7 @@
 package ITVitae.PMT.services;
 
 import ITVitae.PMT.DTOs.Account.AccountDTO;
+import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
@@ -64,16 +65,22 @@ public class ProjectService {
 
     public List<AccountDTO> findProjectDevelopers(Long id) {
         ProjectDTO projectDTO = findById(id);
-        //put developerlist in DTO. ProjectDTO might be null!
-        List<AccountDTO> developerDTOs = new ArrayList<>();
-        return developerDTOs;
+        List<AccountDTO> developers = new ArrayList<>();
+        for(AccountShortDTO developerDTO : projectDTO.developers()) {
+            Account developer = accountRepository.findById(developerDTO.id()).get();
+            developers.add(AccountDTO.fromEntity(developer));
+        }
+        return developers;
     }
 
-    public List<AccountDTO> findProjectClients(Long id) {
+    public List<AccountDTO> findProjectCustomers(Long id) {
         ProjectDTO projectDTO = findById(id);
-        //put clientlist in DTO. ProjectDTO might be null!
-        List<AccountDTO> clientDTOs = new ArrayList<>();
-        return clientDTOs;
+        List<AccountDTO> customers = new ArrayList<>();
+        for(AccountShortDTO developerDTO : projectDTO.customers()) {
+            Account customer = accountRepository.findById(developerDTO.id()).get();
+            customers.add(AccountDTO.fromEntity(customer));
+        }
+        return customers;
     }
 
     public ProjectDTO editProject(Long id, ProjectEditDTO editDTO) {
