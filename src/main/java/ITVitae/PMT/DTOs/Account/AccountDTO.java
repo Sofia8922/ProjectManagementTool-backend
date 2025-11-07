@@ -17,8 +17,6 @@ public record AccountDTO(
         @NotBlank(message = "Email is required")
         String email,
         String name,
-        @NotBlank(message = "Password is required")
-        String password,
         //assigned projects
         @NotNull(message = "Role is required")
         Constants.UserRole role,
@@ -31,7 +29,6 @@ public record AccountDTO(
             account.getId(),
             account.getEmail(),
             account.getName(),
-            account.getPassword(),
             account.getRole(),
             account.getCommentList().stream().map(CommentShortDTO::fromEntity).toList(),
             account.getMadeTaskList().stream().map(TaskShortDTO::fromEntity).toList(),

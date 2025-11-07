@@ -44,6 +44,13 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
+    @GetMapping("/{id}/{password}")
+    public ResponseEntity<Boolean> loginAccount(@PathVariable Long id, @PathVariable String password)
+    {
+        Boolean success = accountService.attemptLogin(id, password);
+        return ResponseEntity.status(HttpStatus.OK).body(success);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO)
     {

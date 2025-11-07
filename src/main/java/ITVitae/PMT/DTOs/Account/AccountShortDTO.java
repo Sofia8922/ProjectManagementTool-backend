@@ -11,8 +11,6 @@ public record AccountShortDTO(
         @NotBlank(message = "Email is required")
         String email,
         String name,
-        @NotBlank(message = "Password is required")
-        String password,
         @NotNull(message = "Role is required")
         Constants.UserRole role
 ) {
@@ -21,7 +19,6 @@ public record AccountShortDTO(
                 account.getId(),
                 account.getEmail(),
                 account.getName(),
-                account.getPassword(),
                 account.getRole()
         );
     }
