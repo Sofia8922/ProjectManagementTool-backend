@@ -1,6 +1,7 @@
 package ITVitae.PMT.controllers;
 
 import ITVitae.PMT.DTOs.Account.AccountDTO;
+import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
@@ -59,10 +60,10 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
     }
 
-    @GetMapping("/{id}/clients")
-    public ResponseEntity<List<AccountDTO>> getProjectClients(@PathVariable Long id)
+    @GetMapping("/{id}/customers")
+    public ResponseEntity<List<AccountDTO>> getProjectCustomers(@PathVariable Long id)
     {
-        List<AccountDTO> accountDTOs = projectService.findProjectDevelopers(id);
+        List<AccountDTO> accountDTOs = projectService.findProjectCustomers(id);
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
     }
 

@@ -21,6 +21,20 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
+    @ManyToMany
+    @JoinTable(
+            name = "project_developer",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "developer_id")
+    )
+    private List<Account> developers = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "project_customer",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id")
+    )
+    private List<Account> customers = new ArrayList<>();
 
     public Project() {
 
@@ -64,5 +78,13 @@ public class Project {
 
     public void setCreator(Account creator) {
         this.projectCreator = creator;
+    }
+
+    public List<Account> getDevelopers() {
+        return developers;
+    }
+
+    public List<Account> getCustomers() {
+        return customers;
     }
 }
