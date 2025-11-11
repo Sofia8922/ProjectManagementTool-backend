@@ -112,4 +112,33 @@ public class TaskService {
 
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
+
+    @Transactional
+    public ResponseEntity<String> addDeveloper(Long taskId, long accountId)
+    {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task id not found"));
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account id not found"));
+        if(account.getRole() != Constants.UserRole.DEVELOPER)
+            throw new RuntimeException("Account must be a developer!");
+
+        task.addAssignedDeveloper(account);
+        taskRepository.save(task);
+
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    public ResponseEntity<String> removeDeveloper(Long taskId, long tagId)
+    {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task id not found"));
+        Account account = accountRepository.findById(tagId)
+                .orElseThrow(() -> new RuntimeException("Account id not found"));
+
+        task.removeAssignedDeveloper(account);
+        taskRepository.save(task);
+
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
 }

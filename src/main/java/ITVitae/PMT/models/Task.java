@@ -83,8 +83,12 @@ public class Task {
         return assignedDevelopers;
     }
 
-    public void setAssignedDevelopers(List<Account> assignedDevelopers) {
-        this.assignedDevelopers = assignedDevelopers;
+    public void addAssignedDeveloper(Account account) {
+        assignedDevelopers.add(account);
+    }
+
+    public void removeAssignedDeveloper(Account account) {
+        assignedDevelopers.remove(account);
     }
 
     public List<Tag> getTags() {
