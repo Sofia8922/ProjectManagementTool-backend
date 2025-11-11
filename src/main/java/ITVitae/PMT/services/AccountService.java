@@ -7,6 +7,7 @@ import ITVitae.PMT.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +36,19 @@ public class AccountService {
         return accountRepository.findById(id)
                 .map(AccountDTO::fromEntity)
                 .orElse(null);
+    }
+
+    public List<AccountDTO> findByRoleAndEmail(Constants.UserRole role, String name) {
+        List<AccountDTO> allByName =
+                name.isEmpty() ?
+                        findAll() :
+                        accountRepository.findByEmailContainingIgnoreCase(name).stream().map(AccountDTO::fromEntity).toList();
+
+        List<AccountDTO> output = new ArrayList<>();
+        for(AccountDTO accountDTO : allByName)
+            if(accountDTO.role() == role) output.add(accountDTO);
+
+        return output;
     }
 
     public AccountLoginReturnDTO attemptLogin(String email, String password) {
