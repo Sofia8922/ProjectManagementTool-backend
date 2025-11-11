@@ -16,7 +16,8 @@ public class Project {
     private String description;
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
-    //tags
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Tag> tags = new ArrayList<>();
     private boolean scrappedStatus;
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
@@ -62,6 +63,10 @@ public class Project {
 
     public List<Task> getTasks() {
         return tasks;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
     }
 
     public boolean isStatusScrapped() {
