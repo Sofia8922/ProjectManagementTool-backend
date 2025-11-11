@@ -3,6 +3,7 @@ package ITVitae.PMT.controllers;
 import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
 import ITVitae.PMT.DTOs.Account.AccountDTO;
 import ITVitae.PMT.DTOs.Account.AccountEditDTO;
+import ITVitae.PMT.DTOs.Account.AccountLoginReturnDTO;
 import ITVitae.PMT.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,11 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
-    @GetMapping("/{id}/{password}")
-    public ResponseEntity<Boolean> loginAccount(@PathVariable Long id, @PathVariable String password)
+    @GetMapping("/{email}/{password}")
+    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
     {
-        Boolean success = accountService.attemptLogin(id, password);
-        return ResponseEntity.status(HttpStatus.OK).body(success);
+        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
+        return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 
     @PutMapping("/{id}")
