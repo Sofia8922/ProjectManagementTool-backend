@@ -1,9 +1,6 @@
 package ITVitae.PMT.services;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
-import ITVitae.PMT.DTOs.Account.AccountDTO;
-import ITVitae.PMT.DTOs.Account.AccountEditDTO;
-import ITVitae.PMT.DTOs.Account.AccountLoginDTO;
+import ITVitae.PMT.DTOs.Account.*;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.repositories.AccountRepository;
@@ -40,12 +37,13 @@ public class AccountService {
                 .orElse(null);
     }
 
-    public Boolean attemptLogin(Long id, String password) {
-        AccountLoginDTO accountDTO = accountRepository.findById(id)
-                .map(AccountLoginDTO::fromEntity)
-                .orElse(null);
-        if(accountDTO == null) throw new RuntimeException("account not found");
-        return password.equals(accountDTO.password());
+    public AccountLoginReturnDTO attemptLogin(String email, String password) {
+        Account account = accountRepository.findByEmailIgnoreCase(email);
+        if(account == null) throw new RuntimeException("email not found");
+        AccountPasswordDTO accountPasswordDTO = AccountPasswordDTO.fromEntity(account);
+        if(password.equals(accountPasswordDTO.password()))
+            return AccountLoginReturnDTO.fromEntity(account);
+        throw new RuntimeException("password doesn't match");
     }
 
     public AccountDTO editAccount(Long id, AccountEditDTO editDTO) {

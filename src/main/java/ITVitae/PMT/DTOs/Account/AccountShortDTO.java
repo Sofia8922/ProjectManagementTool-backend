@@ -10,6 +10,7 @@ public record AccountShortDTO(
         Long id,
         @NotBlank(message = "Email is required")
         String email,
+        @NotBlank(message = "Name is required")
         String name,
         @NotNull(message = "Role is required")
         Constants.UserRole role

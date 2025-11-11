@@ -12,6 +12,7 @@ public class Account {
     @Id
     @GeneratedValue
     private Long id;
+    @NotBlank
     private String name;
     @NotBlank
     private String email;

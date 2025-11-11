@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record AccountEditDTO(
         @NotBlank(message = "Email is required")
         String email,
+        @NotBlank(message = "Name is required")
         String name,
         @NotBlank(message = "Password is required")
         String password
