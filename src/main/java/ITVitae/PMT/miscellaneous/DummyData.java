@@ -39,7 +39,7 @@ public class DummyData {
             new AccountCreateDTO("Amanda@email.com", "Amanda", "1234", OWNER),
             new AccountCreateDTO("Brandon@email.com", "Brandon", "1234", DEVELOPER),
             new AccountCreateDTO( "Chris@email.com", "Chris","1234", DEVELOPER),
-            new AccountCreateDTO("Dara@email.com", "", "1234", DEVELOPER),
+            new AccountCreateDTO("Dara@email.com", "Dara", "1234", DEVELOPER),
             new AccountCreateDTO( "Emil@email.com","Emil", "1234", CUSTOMER)
         };
         for (AccountCreateDTO acd : dummyAccounts) accountService.createAccount(acd);

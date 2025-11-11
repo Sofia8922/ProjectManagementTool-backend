@@ -16,6 +16,7 @@ public record AccountDTO(
         Long id,
         @NotBlank(message = "Email is required")
         String email,
+        @NotBlank(message = "Name is required")
         String name,
         //assigned projects
         @NotNull(message = "Role is required")
