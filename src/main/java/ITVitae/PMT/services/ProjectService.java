@@ -8,8 +8,10 @@ import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.models.Task;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +102,42 @@ public class ProjectService {
         if(projectRepository.findById(id).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         projectRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @Transactional
+    public ResponseEntity<String> addAccount(Long projectId, long accountId)
+    {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project id not found"));
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account id not found"));
+        if(account.getRole() == Constants.UserRole.OWNER)
+            throw new RuntimeException("Account must be a developer or customer!");
+
+        if(account.getRole() == Constants.UserRole.DEVELOPER) {
+            project.addDeveloper(account);
+        }
+        else
+        {
+            project.addCustomer(account);
+        }
+        projectRepository.save(project);
+
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    public ResponseEntity<String> removeAccount(Long projectId, long tagId)
+    {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project id not found"));
+        Account account = accountRepository.findById(tagId)
+                .orElseThrow(() -> new RuntimeException("Account id not found"));
+
+        project.removeDeveloper(account);
+        project.removeCustomer(account);
+        projectRepository.save(project);
+
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }

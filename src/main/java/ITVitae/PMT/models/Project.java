@@ -89,7 +89,15 @@ public class Project {
         return developers;
     }
 
+    public void addDeveloper(Account account) { developers.add(account); }
+
+    public void removeDeveloper(Account account) { developers.remove(account); }
+
     public List<Account> getCustomers() {
         return customers;
     }
+
+    public void addCustomer(Account account) { customers.add(account); }
+
+    public void removeCustomer(Account account) { customers.remove(account); }
 }

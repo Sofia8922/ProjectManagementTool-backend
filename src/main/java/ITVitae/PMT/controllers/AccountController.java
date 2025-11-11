@@ -45,17 +45,17 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
-    @PostMapping("/{email}/{password}")
-    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
-    {
-        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
-        return ResponseEntity.status(HttpStatus.OK).body(account);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO)
     {
         AccountDTO created = accountService.editAccount(id, editDTO);
         return ResponseEntity.status(HttpStatus.OK).body(created);
+    }
+
+    @PostMapping("/{email}/{password}")
+    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
+    {
+        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
+        return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 }

@@ -74,6 +74,18 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
+    @PutMapping("/{taskId}/addAccount/{accountId}")
+    public ResponseEntity<String> addAccount(@PathVariable Long taskId, @PathVariable Long accountId)
+    {
+        return projectService.addAccount(taskId, accountId);
+    }
+
+    @PutMapping("/{taskId}/removeAccount/{accountId}")
+    public ResponseEntity<String> removeAccount(@PathVariable Long taskId, @PathVariable Long accountId)
+    {
+        return projectService.removeAccount(taskId, accountId);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProject(@PathVariable Long id)
     {
