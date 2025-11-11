@@ -43,7 +43,8 @@ public class DummyData {
         for (AccountCreateDTO acd : dummyAccounts) accountService.createAccount(acd);
         //projects
         ProjectCreateDTO[] dummyProjects = {
-            new ProjectCreateDTO("Pretzel store", "revamp the website", 1L)
+                new ProjectCreateDTO("Pretzel store", "revamp the website", 1L),
+                new ProjectCreateDTO("Arne's game store", "might delete this later idk", 1L)
         };
         for (ProjectCreateDTO pcd : dummyProjects) projectService.createProject(pcd);
         //tags
