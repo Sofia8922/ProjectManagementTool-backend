@@ -86,14 +86,29 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @Transactional
     public ResponseEntity<String> addTag(Long taskId, long tagId)
     {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task id not found"));
-        Tag tag = tagRepository.findById(taskId)
+        Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(() -> new RuntimeException("Tag id not found"));
 
         task.addTag(tag);
+        taskRepository.save(task);
+
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    public ResponseEntity<String> removeTag(Long taskId, long tagId)
+    {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task id not found"));
+        Tag tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+
+        task.removeTag(tag);
+        taskRepository.save(task);
 
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
