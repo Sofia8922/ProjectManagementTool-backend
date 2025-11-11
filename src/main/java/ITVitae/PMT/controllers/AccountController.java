@@ -46,7 +46,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
-    @GetMapping("/find/{role}")
+    @GetMapping("/find/{role}/")
     public ResponseEntity<List<AccountDTO>> searchAccountShort(@PathVariable Constants.UserRole role)
     {
         return searchAccount(role, "");
