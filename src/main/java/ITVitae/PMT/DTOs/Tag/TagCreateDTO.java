@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 public record TagCreateDTO(
         @NotBlank(message = "Tag must have a name")
         String name,
-        @NotBlank(message = "Tag must have a colour")
+        @NotNull(message = "Tag must have a colour")
         Constants.Colour colour,
         @NotNull(message = "Tag must have an project id")
         Long projectId

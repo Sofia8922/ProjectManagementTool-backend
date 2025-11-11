@@ -6,9 +6,11 @@ import ITVitae.PMT.DTOs.Task.TaskEditDTO;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Project;
+import ITVitae.PMT.models.Tag;
 import ITVitae.PMT.models.Task;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
+import ITVitae.PMT.repositories.TagRepository;
 import ITVitae.PMT.repositories.TaskRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,12 +25,14 @@ public class TaskService {
     final private TaskRepository taskRepository;
     final private AccountRepository accountRepository;
     final private ProjectRepository projectRepository;
+    final private TagRepository tagRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, AccountRepository accountRepository, ProjectRepository projectRepository) {
+    public TaskService(TaskRepository taskRepository, AccountRepository accountRepository, ProjectRepository projectRepository, TagRepository tagRepository) {
         this.taskRepository = taskRepository;
         this.accountRepository = accountRepository;
         this.projectRepository = projectRepository;
+        this.tagRepository = tagRepository;
     }
 
     public TaskDTO createTask(TaskCreateDTO createDTO) {
@@ -80,6 +83,18 @@ public class TaskService {
         if(taskRepository.findById(id).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         taskRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    public ResponseEntity<String> addTag(Long taskId, long tagId)
+    {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task id not found"));
+        Tag tag = tagRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+
+        task.addTag(tag);
+
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }

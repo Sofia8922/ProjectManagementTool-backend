@@ -45,7 +45,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
-    @GetMapping("/{email}/{password}")
+    @PostMapping("/{email}/{password}")
     public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
     {
         AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
