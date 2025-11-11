@@ -95,6 +95,10 @@ public class Task {
         tags.add(tag);
     }
 
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+    }
+
     public List<Comment> getCommentList() {
         return commentList;
     }

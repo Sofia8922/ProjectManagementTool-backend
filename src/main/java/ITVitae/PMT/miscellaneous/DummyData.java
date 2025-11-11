@@ -72,6 +72,9 @@ public class DummyData {
             taskService.editTask(index, ted);
             index++;
         }
+        taskService.addTag(1L, 1L);
+        taskService.addTag(2L, 1L);
+        taskService.addTag(2L, 2L);
         //comments
         CommentCreateDTO[] dummyComments = {
             new CommentCreateDTO("Good morning", 1L, 2L),
