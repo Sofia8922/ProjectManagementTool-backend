@@ -56,6 +56,12 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
+    @PutMapping("/{taskId}/{tagId}")
+    public ResponseEntity<String> addTag(@PathVariable Long taskId, @Valid @RequestBody Long tagId)
+    {
+        return taskService.addTag(taskId, tagId);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable Long id)
     {

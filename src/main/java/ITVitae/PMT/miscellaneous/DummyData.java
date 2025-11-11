@@ -50,7 +50,9 @@ public class DummyData {
         //tags
         TagCreateDTO[] dummytags = {
                 new TagCreateDTO("Difficult", Constants.Colour.ORANGE, 1L),
-                new TagCreateDTO("Easy", Constants.Colour.GREEN, 1L)
+                new TagCreateDTO("Easy", Constants.Colour.GREEN, 1L),
+                new TagCreateDTO("Jojo", Constants.Colour.BLUE, 2L),
+                new TagCreateDTO("Jojojo", Constants.Colour.WHITE, 2L)
         };
         for(TagCreateDTO tcd : dummytags) tagService.createTag(tcd);
         //tasks
