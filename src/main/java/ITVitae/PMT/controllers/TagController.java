@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/tags")
+@RequestMapping("/{verificationId}/tags")
 public class TagController {
     private final TagService tagService;
 
@@ -28,9 +28,9 @@ public class TagController {
     }
 
     @PostMapping()
-    public ResponseEntity<TagDTO> postTag(@Valid @RequestBody TagCreateDTO createDTO)
+    public ResponseEntity<TagDTO> postTag(@Valid @RequestBody TagCreateDTO createDTO, @PathVariable Long verificationId)
     {
-        TagDTO created = tagService.createTag(createDTO);
+        TagDTO created = tagService.createTag(createDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
@@ -49,15 +49,15 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TagDTO> putTag(@PathVariable Long id, @Valid @RequestBody TagEditDTO editDTO)
+    public ResponseEntity<TagDTO> putTag(@PathVariable Long id, @Valid @RequestBody TagEditDTO editDTO, @PathVariable Long verificationId)
     {
-        TagDTO created = tagService.editTag(id, editDTO);
+        TagDTO created = tagService.editTag(id, editDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTag(@PathVariable Long id)
+    public ResponseEntity<String> deleteTag(@PathVariable Long id, @PathVariable Long verificationId)
     {
-        return tagService.deleteTag(id);
+        return tagService.deleteTag(id, verificationId);
     }
 }

@@ -1,6 +1,7 @@
 package ITVitae.PMT.services;
 
 import ITVitae.PMT.DTOs.Account.*;
+import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.repositories.AccountRepository;
@@ -20,6 +21,10 @@ public class AccountService {
     }
 
     public AccountDTO createAccount(AccountCreateDTO createDTO) {
+        List<Account> existingAccounts = accountRepository.findAll();
+        for(Account existingAccount : existingAccounts)
+            if(existingAccount.getEmail().equals(createDTO.email()))
+                throw new RuntimeException("Email already used!");
         Account account = createDTO.toEntity();
         Account savedAccount = accountRepository.save(account);
         return AccountDTO.fromEntity(savedAccount);
@@ -60,12 +65,11 @@ public class AccountService {
         throw new RuntimeException("password doesn't match");
     }
 
-    public AccountDTO editAccount(Long id, AccountEditDTO editDTO) {
+    public AccountDTO editAccount(Long id, AccountEditDTO editDTO, Long userId) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account id not found"));
+        CheckCredentials.checkWithId(userId, id);
 
-        if(!editDTO.email().equals(Constants.noEdit))
-            account.setEmail(editDTO.email());
         if(!editDTO.name().equals(Constants.noEdit))
             account.setName(editDTO.name());
         if(!editDTO.password().equals(Constants.noEdit))

@@ -47,6 +47,10 @@ public class DummyData {
                 new ProjectCreateDTO("Arne's game store", "might delete this later idk", 1L)
         };
         for (ProjectCreateDTO pcd : dummyProjects) projectService.createProject(pcd);
+        projectService.addAccount(1L, 2L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 3L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 5L, Constants.ignoreVerification);
+        projectService.addAccount(2L, 4L, Constants.ignoreVerification);
         //tags
         TagCreateDTO[] dummytags = {
                 new TagCreateDTO("Difficult", Constants.Colour.ORANGE, 1L),
@@ -54,7 +58,7 @@ public class DummyData {
                 new TagCreateDTO("Jojo", Constants.Colour.BLUE, 2L),
                 new TagCreateDTO("Jojojo", Constants.Colour.WHITE, 2L)
         };
-        for(TagCreateDTO tcd : dummytags) tagService.createTag(tcd);
+        for(TagCreateDTO tcd : dummytags) tagService.createTag(tcd, Constants.ignoreVerification);
         //tasks
         TaskCreateDTO[] dummyTasks = {
             new TaskCreateDTO("logo", "redesign the logo", 1L, 1L),
@@ -62,19 +66,19 @@ public class DummyData {
             new TaskCreateDTO("sell form", "don't forget the discount", 4L, 1L),
             new TaskCreateDTO("FAQ", "just a basic FAQ page", 3L, 1L)
         };
-        for (TaskCreateDTO tcd : dummyTasks) taskService.createTask(tcd);
+        for (TaskCreateDTO tcd : dummyTasks) taskService.createTask(tcd, Constants.ignoreVerification);
         TaskEditDTO[] editDummyTasks = {
             new TaskEditDTO("#", "#", "COMPLETED"),
             new TaskEditDTO("#", "#", "IN_PROGRESS")
         };
         Long index = 1L;
         for (TaskEditDTO ted : editDummyTasks) {
-            taskService.editTask(index, ted);
+            taskService.editTask(index, ted, Constants.ignoreVerification);
             index++;
         }
-        taskService.addTag(1L, 1L);
-        taskService.addTag(2L, 1L);
-        taskService.addTag(2L, 2L);
+        taskService.addTag(1L, 1L, Constants.ignoreVerification);
+        taskService.addTag(2L, 1L, Constants.ignoreVerification);
+        taskService.addTag(2L, 2L, Constants.ignoreVerification);
         //comments
         CommentCreateDTO[] dummyComments = {
             new CommentCreateDTO("Good morning", 1L, 2L),
@@ -82,7 +86,7 @@ public class DummyData {
             new CommentCreateDTO("Good day", 4L, 1L),
             new CommentCreateDTO("How is everybody?", 4L, 1L)
         };
-        for (CommentCreateDTO ccd : dummyComments) commentService.createComment(ccd);
+        for (CommentCreateDTO ccd : dummyComments) commentService.createComment(ccd, Constants.ignoreVerification);
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/accounts")
+@RequestMapping("/{verificationId}/accounts")
 public class AccountController {
     private final AccountService accountService;
 
@@ -60,10 +60,10 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO)
+    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO, @PathVariable Long verificationId)
     {
-        AccountDTO created = accountService.editAccount(id, editDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(created);
+        AccountDTO edited = accountService.editAccount(id, editDTO, verificationId);
+        return ResponseEntity.status(HttpStatus.OK).body(edited);
     }
 
     @PostMapping("/{email}/{password}")

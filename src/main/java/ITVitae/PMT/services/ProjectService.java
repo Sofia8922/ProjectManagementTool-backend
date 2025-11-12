@@ -5,9 +5,11 @@ import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
+import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.models.Tag;
 import ITVitae.PMT.models.Task;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
@@ -85,9 +87,10 @@ public class ProjectService {
         return customers;
     }
 
-    public ProjectDTO editProject(Long id, ProjectEditDTO editDTO) {
+    public ProjectDTO editProject(Long id, ProjectEditDTO editDTO, Long userId) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project id not found"));
+        CheckCredentials.checkWithId(userId, project.getCreator().getId());
 
         if(!editDTO.name().equals(Constants.noEdit))
             project.setName(editDTO.name());
@@ -97,21 +100,32 @@ public class ProjectService {
         return ProjectDTO.fromEntity(project);
     }
 
-    public ResponseEntity<String> deleteProject(Long id)
+    public ResponseEntity<String> deleteProject(Long id, Long userId)
     {
         if(projectRepository.findById(id).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        CheckCredentials.checkWithProject(userId, id, false);
         projectRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
     @Transactional
-    public ResponseEntity<String> addAccount(Long projectId, long accountId)
+    public ResponseEntity<String> addAccount(Long projectId, Long accountId, Long userId)
     {
+        CheckCredentials.checkWithProject(userId, projectId, false);
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project id not found"));
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account id not found"));
+        List<Account> existingDevs = project.getDevelopers();
+        for(Account dev : existingDevs)
+            if (dev.equals(account))
+                throw new RuntimeException("Developer already added!");
+        List<Account> existingCustomer = project.getCustomers();
+        for(Account dev : existingCustomer)
+            if (dev.equals(account))
+                throw new RuntimeException("Customer already added!");
+
         if(account.getRole() == Constants.UserRole.OWNER)
             throw new RuntimeException("Account must be a developer or customer!");
 
@@ -127,8 +141,9 @@ public class ProjectService {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
-    public ResponseEntity<String> removeAccount(Long projectId, long tagId)
+    public ResponseEntity<String> removeAccount(Long projectId, Long tagId, Long userId)
     {
+        CheckCredentials.checkWithProject(userId, projectId, false);
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project id not found"));
         Account account = accountRepository.findById(tagId)
