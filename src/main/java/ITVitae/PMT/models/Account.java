@@ -12,12 +12,16 @@ public class Account {
     @Id
     @GeneratedValue
     private Long id;
+    @NotBlank
     private String name;
     @NotBlank
     private String email;
     @NotBlank
     private String password;
-    //assigned project
+    @ManyToMany(mappedBy = "developers")
+    private List<Project> developers = new ArrayList<>();
+    @ManyToMany(mappedBy = "customers")
+    private List<Project> customers= new ArrayList<>();
     @NotNull
     private Constants.UserRole role;
     @ManyToMany(mappedBy = "assignedDevelopers")

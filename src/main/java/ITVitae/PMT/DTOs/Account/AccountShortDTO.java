@@ -10,9 +10,8 @@ public record AccountShortDTO(
         Long id,
         @NotBlank(message = "Email is required")
         String email,
+        @NotBlank(message = "Name is required")
         String name,
-        @NotBlank(message = "Password is required")
-        String password,
         @NotNull(message = "Role is required")
         Constants.UserRole role
 ) {
@@ -21,7 +20,6 @@ public record AccountShortDTO(
                 account.getId(),
                 account.getEmail(),
                 account.getName(),
-                account.getPassword(),
                 account.getRole()
         );
     }

@@ -1,13 +1,8 @@
 package ITVitae.PMT.controllers;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
-import ITVitae.PMT.DTOs.Account.AccountDTO;
-import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
-import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Task.TaskCreateDTO;
 import ITVitae.PMT.DTOs.Task.TaskDTO;
 import ITVitae.PMT.DTOs.Task.TaskEditDTO;
-import ITVitae.PMT.models.Task;
 import ITVitae.PMT.services.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +49,30 @@ public class TaskController {
     {
         TaskDTO created = taskService.editTask(id, editDTO);
         return ResponseEntity.status(HttpStatus.OK).body(created);
+    }
+
+    @PutMapping("/{taskId}/addTag/{tagId}")
+    public ResponseEntity<String> addTag(@PathVariable Long taskId, @PathVariable Long tagId)
+    {
+        return taskService.addTag(taskId, tagId);
+    }
+
+    @PutMapping("/{taskId}/removeTag/{tagId}")
+    public ResponseEntity<String> removeTag(@PathVariable Long taskId, @PathVariable Long tagId)
+    {
+        return taskService.removeTag(taskId, tagId);
+    }
+
+    @PutMapping("/{taskId}/addAccount/{accountId}")
+    public ResponseEntity<String> addDeveloper(@PathVariable Long taskId, @PathVariable Long accountId)
+    {
+        return taskService.addDeveloper(taskId, accountId);
+    }
+
+    @PutMapping("/{taskId}/removeAccount/{accountId}")
+    public ResponseEntity<String> removeDeveloper(@PathVariable Long taskId, @PathVariable Long accountId)
+    {
+        return taskService.removeDeveloper(taskId, accountId);
     }
 
     @DeleteMapping("/{id}")

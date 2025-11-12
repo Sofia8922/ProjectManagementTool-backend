@@ -16,11 +16,26 @@ public class Project {
     private String description;
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
-    //tags
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Tag> tags = new ArrayList<>();
     private boolean scrappedStatus;
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
+    @ManyToMany
+    @JoinTable(
+            name = "project_developer",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "developer_id")
+    )
+    private List<Account> developers = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "project_customer",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id")
+    )
+    private List<Account> customers = new ArrayList<>();
 
     public Project() {
 
@@ -50,6 +65,10 @@ public class Project {
         return tasks;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
     public boolean isStatusScrapped() {
         return scrappedStatus;
     }
@@ -65,4 +84,20 @@ public class Project {
     public void setCreator(Account creator) {
         this.projectCreator = creator;
     }
+
+    public List<Account> getDevelopers() {
+        return developers;
+    }
+
+    public void addDeveloper(Account account) { developers.add(account); }
+
+    public void removeDeveloper(Account account) { developers.remove(account); }
+
+    public List<Account> getCustomers() {
+        return customers;
+    }
+
+    public void addCustomer(Account account) { customers.add(account); }
+
+    public void removeCustomer(Account account) { customers.remove(account); }
 }

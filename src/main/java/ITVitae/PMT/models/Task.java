@@ -24,7 +24,13 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "taskCreator_id")
     private Account taskCreator;
-    //tags
+    @ManyToMany
+    @JoinTable(
+            name = "task_tag",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "task_assignedDeveloper",
@@ -77,8 +83,24 @@ public class Task {
         return assignedDevelopers;
     }
 
-    public void setAssignedDevelopers(List<Account> assignedDevelopers) {
-        this.assignedDevelopers = assignedDevelopers;
+    public void addAssignedDeveloper(Account account) {
+        assignedDevelopers.add(account);
+    }
+
+    public void removeAssignedDeveloper(Account account) {
+        assignedDevelopers.remove(account);
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
     }
 
     public List<Comment> getCommentList() {

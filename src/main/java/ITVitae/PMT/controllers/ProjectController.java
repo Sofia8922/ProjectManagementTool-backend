@@ -1,12 +1,11 @@
 package ITVitae.PMT.controllers;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
 import ITVitae.PMT.DTOs.Account.AccountDTO;
-import ITVitae.PMT.DTOs.Comment.CommentCreateDTO;
-import ITVitae.PMT.DTOs.Comment.CommentDTO;
+import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
+import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.services.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +46,44 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(projectDTO);
     }
 
+    @GetMapping("/accounts/{id}")
+    public ResponseEntity<List<ProjectDTO>> getProjectByAccount(@PathVariable Long id)
+    {
+        List<ProjectDTO> commentDTO = projectService.findByAccountId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDTO);
+    }
+
+    @GetMapping("/{id}/developers")
+    public ResponseEntity<List<AccountDTO>> getProjectDevelopers(@PathVariable Long id)
+    {
+        List<AccountDTO> accountDTOs = projectService.findProjectDevelopers(id);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
+    }
+
+    @GetMapping("/{id}/customers")
+    public ResponseEntity<List<AccountDTO>> getProjectCustomers(@PathVariable Long id)
+    {
+        List<AccountDTO> accountDTOs = projectService.findProjectCustomers(id);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDTO> putProject(@PathVariable Long id, @Valid @RequestBody ProjectEditDTO createDTO)
     {
         ProjectDTO created = projectService.editProject(id, createDTO);
         return ResponseEntity.status(HttpStatus.OK).body(created);
+    }
+
+    @PutMapping("/{taskId}/addAccount/{accountId}")
+    public ResponseEntity<String> addAccount(@PathVariable Long taskId, @PathVariable Long accountId)
+    {
+        return projectService.addAccount(taskId, accountId);
+    }
+
+    @PutMapping("/{taskId}/removeAccount/{accountId}")
+    public ResponseEntity<String> removeAccount(@PathVariable Long taskId, @PathVariable Long accountId)
+    {
+        return projectService.removeAccount(taskId, accountId);
     }
 
     @DeleteMapping("/{id}")
