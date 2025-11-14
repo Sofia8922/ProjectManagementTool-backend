@@ -28,9 +28,9 @@ public class CheckCredentials {
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
         Account loggedInUser = accountRepository.findById(verificationId)
-                .orElseThrow(() -> new RuntimeException("User id not found"));
+                .orElseGet(() -> {ErrorHandler.throwError("User Id", Constants.Errors.NOT_FOUND); return null;});
 
-        if(account != loggedInUser) throw new RuntimeException("Denied");
+        if(account != loggedInUser) ErrorHandler.throwError(Constants.Errors.DENIED);
     }
 
     @Transactional
@@ -38,16 +38,16 @@ public class CheckCredentials {
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("project id not found"));
+                .orElseGet(() -> {ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND); return null;});
         Account loggedInUser = accountRepository.findById(verificationId)
-                .orElseThrow(() -> new RuntimeException("User id not found"));
+                .orElseGet(() -> {ErrorHandler.throwError("User Id", Constants.Errors.NOT_FOUND); return null;});
 
         if(project.getCreator() == loggedInUser) return;
         if(developersAllowed)
             for(Account developer : project.getDevelopers())
                 if(developer.equals(loggedInUser)) return;
 
-        throw new RuntimeException("Denied");
+        ErrorHandler.throwError(Constants.Errors.DENIED);
     }
 
     @Transactional
@@ -55,7 +55,7 @@ public class CheckCredentials {
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Caught nullpointer exception"));
+                .orElseGet(() -> {ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND); return null;});
         checkWithProject(verificationId, task.getProject().getId(), developersAllowed);
     }
 
@@ -63,6 +63,6 @@ public class CheckCredentials {
     public static void checkWithId(Long verificationId, Long otherId)
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
-        if(!verificationId.equals(otherId)) throw new RuntimeException("Denied");
+        if(!verificationId.equals(otherId)) ErrorHandler.throwError(Constants.Errors.DENIED);
     }
 }

@@ -5,6 +5,7 @@ import ITVitae.PMT.DTOs.Comment.CommentDTO;
 import ITVitae.PMT.DTOs.Comment.CommentEditDTO;
 import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Comment;
 import ITVitae.PMT.models.Task;
@@ -34,10 +35,11 @@ public class CommentService {
     public CommentDTO createComment(CommentCreateDTO createDTO, Long userId) {
         Comment comment = createDTO.toEntity();
         Account author = accountRepository.findById(createDTO.authorId())
-                .orElseThrow(() -> new RuntimeException("Author id not found"));
-        if(author.getRole() == Constants.UserRole.CUSTOMER) new RuntimeException("Customers cannot comment");
+                .orElseGet(() -> ErrorHandler.throwError("Author id", Constants.Errors.NOT_FOUND));
+        if(author.getRole() == Constants.UserRole.CUSTOMER)
+                ErrorHandler.throwError("Customers cannot comment", Constants.Errors.CUSTOM);
         Task task = taskRepository.findById(createDTO.taskId())
-                .orElseThrow(() -> new RuntimeException("Task id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Task id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithId(userId, createDTO.authorId());
         CheckCredentials.checkWithTask(userId, createDTO.taskId(), true);
 
@@ -63,7 +65,7 @@ public class CommentService {
 
     public CommentDTO editComment(Long id, CommentEditDTO editDTO, Long userId) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment id not found"));
+            .orElseGet(() -> ErrorHandler.throwError("Comment id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithAccount(userId, comment.getAuthor());
 
         if(!editDTO.content().equals(Constants.noEdit))
@@ -75,7 +77,7 @@ public class CommentService {
     public ResponseEntity<String> deleteComment(Long id, Long userId)
     {
         Comment comment = commentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Comment id not found"));
+            .orElseGet(() -> ErrorHandler.throwError("Comment id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithAccount(userId, comment.getAuthor());
 
         commentRepository.delete(comment);

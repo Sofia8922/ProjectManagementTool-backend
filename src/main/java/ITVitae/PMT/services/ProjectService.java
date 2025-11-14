@@ -6,6 +6,7 @@ import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
 import ITVitae.PMT.miscellaneous.CheckCredentials;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.miscellaneous.Constants;
@@ -36,10 +37,10 @@ public class ProjectService {
     public ProjectDTO createProject(ProjectCreateDTO createDTO) {
         Project project = createDTO.toEntity();
         Account creator = accountRepository.findById(createDTO.creatorId())
-            .orElseThrow(() -> new RuntimeException("Creator id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Creator Id", Constants.Errors.NOT_FOUND));
 
         if(creator.getRole() != Constants.UserRole.OWNER)
-            throw new RuntimeException("Only owners can create projects");
+            ErrorHandler.throwError("Only owners can create projects", Constants.Errors.CUSTOM);
 
         project.setCreator(creator);
 
@@ -89,7 +90,7 @@ public class ProjectService {
 
     public ProjectDTO editProject(Long id, ProjectEditDTO editDTO, Long userId) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithId(userId, project.getCreator().getId());
 
         if(!editDTO.name().equals(Constants.noEdit))
@@ -114,20 +115,20 @@ public class ProjectService {
     {
         CheckCredentials.checkWithProject(userId, projectId, false);
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
         List<Account> existingDevs = project.getDevelopers();
         for(Account dev : existingDevs)
             if (dev.equals(account))
-                throw new RuntimeException("Developer already added!");
+                ErrorHandler.throwError("Developer", Constants.Errors.ALREAD_EXISTS);
         List<Account> existingCustomer = project.getCustomers();
         for(Account dev : existingCustomer)
             if (dev.equals(account))
-                throw new RuntimeException("Customer already added!");
+                ErrorHandler.throwError("Customer", Constants.Errors.ALREAD_EXISTS);
 
         if(account.getRole() == Constants.UserRole.OWNER)
-            throw new RuntimeException("Account must be a developer or customer!");
+            ErrorHandler.throwError("Account must be a developer or customer!", Constants.Errors.CUSTOM);
 
         if(account.getRole() == Constants.UserRole.DEVELOPER) {
             project.addDeveloper(account);
@@ -145,9 +146,9 @@ public class ProjectService {
     {
         CheckCredentials.checkWithProject(userId, projectId, false);
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
         Account account = accountRepository.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Account id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
 
         project.removeDeveloper(account);
         project.removeCustomer(account);

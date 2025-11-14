@@ -5,6 +5,7 @@ import ITVitae.PMT.DTOs.Task.TaskDTO;
 import ITVitae.PMT.DTOs.Task.TaskEditDTO;
 import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.*;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
@@ -36,10 +37,11 @@ public class TaskService {
     public TaskDTO createTask(TaskCreateDTO createDTO, Long userId) {
         Task task = createDTO.toEntity();
         Account creator = accountRepository.findById(createDTO.creatorId())
-                .orElseThrow(() -> new RuntimeException("Creator id not found"));
-        if(creator.getRole() == Constants.UserRole.CUSTOMER) throw new RuntimeException("Customers cannot create tasks");
+                .orElseGet(() -> ErrorHandler.throwError("Creator Id", Constants.Errors.NOT_FOUND));
+        if(creator.getRole() == Constants.UserRole.CUSTOMER)
+            ErrorHandler.throwError("Customers cannot create tasks", Constants.Errors.CUSTOM);
         Project project = projectRepository.findById(createDTO.projectId())
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, createDTO.projectId(), true);
 
         task.setTaskCreator(creator);
@@ -65,7 +67,7 @@ public class TaskService {
     @Transactional
     public TaskDTO editTask(Long id, TaskEditDTO editDTO, Long userId) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         if(!editDTO.name().equals(Constants.noEdit))
@@ -81,7 +83,7 @@ public class TaskService {
     public ResponseEntity<String> deleteTask(Long id, Long userId)
     {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Comment Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         taskRepository.deleteById(id);
@@ -92,13 +94,15 @@ public class TaskService {
     public ResponseEntity<String> addTag(Long taskId, Long tagId, Long userId)
     {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND));
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
         List<Tag> existingTags = task.getTags();
-        if(existingTags.contains(tag)) throw new RuntimeException("Tag already added!");
+        if(existingTags.contains(tag))
+            ErrorHandler.throwError("Tag", Constants.Errors.ALREAD_EXISTS);
         List<Tag> allowedTags = task.getProject().getTags();
-        if(!allowedTags.contains(tag)) throw new RuntimeException("Tag not part of project");
+        if(!allowedTags.contains(tag))
+            ErrorHandler.throwError("Tag", Constants.Errors.WRONG_PROJECT);
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         task.addTag(tag);
@@ -110,9 +114,9 @@ public class TaskService {
     public ResponseEntity<String> removeTag(Long taskId, Long tagId, Long userId)
     {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND));
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         task.removeTag(tag);
@@ -125,15 +129,15 @@ public class TaskService {
     public ResponseEntity<String> addDeveloper(Long taskId, Long accountId, Long userId)
     {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
         if(account.getRole() != Constants.UserRole.DEVELOPER)
-            throw new RuntimeException("Account must be a developer!");
+            ErrorHandler.throwError("Account must be a developer!", Constants.Errors.CUSTOM);
         List<Account> existingDevs = task.getAssignedDevelopers();
         for(Account dev : existingDevs)
             if (dev.equals(account))
-                throw new RuntimeException("Account already added!");
+                ErrorHandler.throwError("Account", Constants.Errors.ALREAD_EXISTS);
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         task.addAssignedDeveloper(account);
@@ -145,9 +149,9 @@ public class TaskService {
     public ResponseEntity<String> removeDeveloper(Long taskId, Long accountId, Long userId)
     {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND));
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         task.removeAssignedDeveloper(account);
