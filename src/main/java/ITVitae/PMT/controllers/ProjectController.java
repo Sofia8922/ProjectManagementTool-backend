@@ -1,11 +1,9 @@
 package ITVitae.PMT.controllers;
 
 import ITVitae.PMT.DTOs.Account.AccountDTO;
-import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
-import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.services.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/projects")
+@RequestMapping("/{verificationId}/projects")
 public class ProjectController {
     private final ProjectService projectService;
 
@@ -68,15 +66,27 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDTO> putProject(@PathVariable Long id, @Valid @RequestBody ProjectEditDTO createDTO)
+    public ResponseEntity<ProjectDTO> putProject(@PathVariable Long id, @Valid @RequestBody ProjectEditDTO createDTO, @PathVariable Long verificationId)
     {
-        ProjectDTO created = projectService.editProject(id, createDTO);
+        ProjectDTO created = projectService.editProject(id, createDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProject(@PathVariable Long id)
+    @PutMapping("/{projectID}/addAccount/{accountId}")
+    public ResponseEntity<String> addAccount(@PathVariable Long projectID, @PathVariable Long accountId, @PathVariable Long verificationId)
     {
-        return projectService.deleteProject(id);
+        return projectService.addAccount(projectID, accountId, verificationId);
+    }
+
+    @PutMapping("/{projectID}/removeAccount/{accountId}")
+    public ResponseEntity<String> removeAccount(@PathVariable Long projectID, @PathVariable Long accountId, @PathVariable Long verificationId)
+    {
+        return projectService.removeAccount(projectID, accountId, verificationId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProject(@PathVariable Long id, @PathVariable Long verificationId)
+    {
+        return projectService.deleteProject(id, verificationId);
     }
 }

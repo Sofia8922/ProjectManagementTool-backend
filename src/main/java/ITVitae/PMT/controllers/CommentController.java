@@ -1,7 +1,5 @@
 package ITVitae.PMT.controllers;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
-import ITVitae.PMT.DTOs.Account.AccountDTO;
 import ITVitae.PMT.DTOs.Comment.CommentCreateDTO;
 import ITVitae.PMT.DTOs.Comment.CommentDTO;
 import ITVitae.PMT.DTOs.Comment.CommentEditDTO;
@@ -16,7 +14,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/comments")
+@RequestMapping("/{verificationId}/comments")
 public class CommentController {
     private final CommentService commentService;
 
@@ -26,9 +24,9 @@ public class CommentController {
     }
 
     @PostMapping()
-    public ResponseEntity<CommentDTO> postComment(@Valid @RequestBody CommentCreateDTO createDTO)
+    public ResponseEntity<CommentDTO> postComment(@Valid @RequestBody CommentCreateDTO createDTO, @PathVariable Long verificationId)
     {
-        CommentDTO created = commentService.createComment(createDTO);
+        CommentDTO created = commentService.createComment(createDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
@@ -47,15 +45,15 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CommentDTO> putComment(@PathVariable Long id, @Valid @RequestBody CommentEditDTO createDTO)
+    public ResponseEntity<CommentDTO> putComment(@PathVariable Long id, @PathVariable Long verificationId, @Valid @RequestBody CommentEditDTO createDTO)
     {
-        CommentDTO created = commentService.editComment(id, createDTO);
+        CommentDTO created = commentService.editComment(id, createDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long id)
+    public ResponseEntity<String> deleteComment(@PathVariable Long id, @PathVariable Long verificationId)
     {
-        return commentService.deleteComment(id);
+        return commentService.deleteComment(id, verificationId);
     }
 }

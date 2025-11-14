@@ -3,6 +3,7 @@ package ITVitae.PMT.DTOs.Task;
 import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Comment.CommentShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectShortDTO;
+import ITVitae.PMT.DTOs.Tag.TagDTO;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.models.Task;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +23,7 @@ public record TaskDTO(
         List<CommentShortDTO> comments,
         @NotNull(message = "Task must have an creator")
         AccountShortDTO creator,
-        //tags
+        List<TagDTO> tags,
         List<AccountShortDTO> assignedDevelopers
 ) {
     public static TaskDTO fromEntity(Task task) {
@@ -34,6 +35,7 @@ public record TaskDTO(
                 ProjectShortDTO.fromEntity(task.getProject()),
                 task.getCommentList().stream().map(CommentShortDTO::fromEntity).toList(),
                 AccountShortDTO.fromEntity(task.getTaskCreator()),
+                task.getTags().stream().map(TagDTO::fromEntity).toList(),
                 task.getAssignedDevelopers().stream().map(AccountShortDTO::fromEntity).toList()
         );
     }

@@ -1,15 +1,15 @@
 package ITVitae.PMT.services;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
-import ITVitae.PMT.DTOs.Account.AccountDTO;
-import ITVitae.PMT.DTOs.Account.AccountEditDTO;
-import ITVitae.PMT.DTOs.Account.AccountLoginDTO;
+import ITVitae.PMT.DTOs.Account.*;
+import ITVitae.PMT.miscellaneous.CheckCredentials;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +22,10 @@ public class AccountService {
     }
 
     public AccountDTO createAccount(AccountCreateDTO createDTO) {
+        List<Account> existingAccounts = accountRepository.findAll();
+        for(Account existingAccount : existingAccounts)
+            if(existingAccount.getEmail().equals(createDTO.email()))
+                ErrorHandler.throwError("Email", Constants.Errors.ALREAD_EXISTS);
         Account account = createDTO.toEntity();
         Account savedAccount = accountRepository.save(account);
         return AccountDTO.fromEntity(savedAccount);
@@ -40,20 +44,34 @@ public class AccountService {
                 .orElse(null);
     }
 
-    public Boolean attemptLogin(Long id, String password) {
-        AccountLoginDTO accountDTO = accountRepository.findById(id)
-                .map(AccountLoginDTO::fromEntity)
-                .orElse(null);
-        if(accountDTO == null) throw new RuntimeException("account not found");
-        return password.equals(accountDTO.password());
+    public List<AccountDTO> findByRoleAndEmail(Constants.UserRole role, String name) {
+        List<AccountDTO> allByName =
+            name.isEmpty() ?
+                findAll() :
+                accountRepository.findByEmailContainingIgnoreCase(name).stream().map(AccountDTO::fromEntity).toList();
+
+        List<AccountDTO> output = new ArrayList<>();
+        for(AccountDTO accountDTO : allByName)
+            if(accountDTO.role() == role) output.add(accountDTO);
+
+        return output;
     }
 
-    public AccountDTO editAccount(Long id, AccountEditDTO editDTO) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account id not found"));
+    public AccountLoginReturnDTO attemptLogin(String email, String password) {
+        Account account = accountRepository.findByEmailIgnoreCase(email);
+        if(account == null) ErrorHandler.throwError("Email", Constants.Errors.NOT_FOUND);
+        AccountPasswordDTO accountPasswordDTO = AccountPasswordDTO.fromEntity(account);
+        if(password.equals(accountPasswordDTO.password()))
+            return AccountLoginReturnDTO.fromEntity(account);
+        ErrorHandler.throwError(Constants.Errors.WRONG_PASSWORD);
+        return null;
+    }
 
-        if(!editDTO.email().equals(Constants.noEdit))
-            account.setEmail(editDTO.email());
+    public AccountDTO editAccount(Long id, AccountEditDTO editDTO, Long userId) {
+        Account account = accountRepository.findById(id)
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
+        CheckCredentials.checkWithId(userId, id);
+
         if(!editDTO.name().equals(Constants.noEdit))
             account.setName(editDTO.name());
         if(!editDTO.password().equals(Constants.noEdit))
