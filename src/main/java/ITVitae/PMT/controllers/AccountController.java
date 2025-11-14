@@ -4,6 +4,7 @@ import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
 import ITVitae.PMT.DTOs.Account.AccountDTO;
 import ITVitae.PMT.DTOs.Account.AccountEditDTO;
 import ITVitae.PMT.DTOs.Account.AccountLoginReturnDTO;
+import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/accounts")
+@RequestMapping("/{verificationId}/accounts")
 public class AccountController {
     private final AccountService accountService;
 
@@ -45,17 +46,30 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
+    @GetMapping("/find/{role}/")
+    public ResponseEntity<List<AccountDTO>> searchAccountShort(@PathVariable Constants.UserRole role)
+    {
+        return searchAccount(role, "");
+    }
+
+    @GetMapping("/find/{role}/{email}")
+    public ResponseEntity<List<AccountDTO>> searchAccount(@PathVariable Constants.UserRole role, @PathVariable String email)
+    {
+        List<AccountDTO> accountDTOs = accountService.findByRoleAndEmail(role, email);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOs);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO, @PathVariable Long verificationId)
+    {
+        AccountDTO edited = accountService.editAccount(id, editDTO, verificationId);
+        return ResponseEntity.status(HttpStatus.OK).body(edited);
+    }
+
     @PostMapping("/{email}/{password}")
     public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
     {
         AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
         return ResponseEntity.status(HttpStatus.OK).body(account);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO)
-    {
-        AccountDTO created = accountService.editAccount(id, editDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 }

@@ -1,10 +1,9 @@
 package ITVitae.PMT.services;
 
-import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
-import ITVitae.PMT.DTOs.Account.AccountDTO;
 import ITVitae.PMT.DTOs.Comment.CommentCreateDTO;
 import ITVitae.PMT.DTOs.Comment.CommentDTO;
 import ITVitae.PMT.DTOs.Comment.CommentEditDTO;
+import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Comment;
@@ -32,13 +31,15 @@ public class CommentService {
         this.taskRepository = taskRepository;
     }
 
-    public CommentDTO createComment(CommentCreateDTO createDTO) {
+    public CommentDTO createComment(CommentCreateDTO createDTO, Long userId) {
         Comment comment = createDTO.toEntity();
         Account author = accountRepository.findById(createDTO.authorId())
                 .orElseThrow(() -> new RuntimeException("Author id not found"));
         if(author.getRole() == Constants.UserRole.CUSTOMER) new RuntimeException("Customers cannot comment");
         Task task = taskRepository.findById(createDTO.taskId())
                 .orElseThrow(() -> new RuntimeException("Task id not found"));
+        CheckCredentials.checkWithId(userId, createDTO.authorId());
+        CheckCredentials.checkWithTask(userId, createDTO.taskId(), true);
 
         comment.setAuthor(author);
         comment.setTask(task);
@@ -60,9 +61,10 @@ public class CommentService {
                 .orElse(null);
     }
 
-    public CommentDTO editComment(Long id, CommentEditDTO editDTO) {
+    public CommentDTO editComment(Long id, CommentEditDTO editDTO, Long userId) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comment id not found"));
+        CheckCredentials.checkWithAccount(userId, comment.getAuthor());
 
         if(!editDTO.content().equals(Constants.noEdit))
             comment.setContent(editDTO.content());
@@ -70,11 +72,13 @@ public class CommentService {
         return CommentDTO.fromEntity(comment);
     }
 
-    public ResponseEntity<String> deleteComment(Long id)
+    public ResponseEntity<String> deleteComment(Long id, Long userId)
     {
-        if(commentRepository.findById(id).isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
-        commentRepository.deleteById(id);
+        Comment comment = commentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Comment id not found"));
+        CheckCredentials.checkWithAccount(userId, comment.getAuthor());
+
+        commentRepository.delete(comment);
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }

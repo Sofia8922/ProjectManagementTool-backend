@@ -2,7 +2,6 @@ package ITVitae.PMT.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +21,14 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "project_developer",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
     private List<Account> developers = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "project_customer",
             joinColumns = @JoinColumn(name = "project_id"),
@@ -89,7 +88,15 @@ public class Project {
         return developers;
     }
 
+    public void addDeveloper(Account account) { developers.add(account); }
+
+    public void removeDeveloper(Account account) { developers.remove(account); }
+
     public List<Account> getCustomers() {
         return customers;
     }
+
+    public void addCustomer(Account account) { customers.add(account); }
+
+    public void removeCustomer(Account account) { customers.remove(account); }
 }
