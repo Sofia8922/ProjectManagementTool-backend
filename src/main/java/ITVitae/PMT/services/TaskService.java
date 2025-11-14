@@ -96,9 +96,9 @@ public class TaskService {
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(() -> new RuntimeException("Tag id not found"));
         List<Tag> existingTags = task.getTags();
-        for(Tag thisTag : existingTags)
-            if (thisTag.equals(tag))
-                throw new RuntimeException("Tag already added!");
+        if(existingTags.contains(tag)) throw new RuntimeException("Tag already added!");
+        List<Tag> allowedTags = task.getProject().getTags();
+        if(!allowedTags.contains(tag)) throw new RuntimeException("Tag not part of project");
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         task.addTag(tag);
