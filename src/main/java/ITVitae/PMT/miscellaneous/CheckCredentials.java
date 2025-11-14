@@ -28,7 +28,7 @@ public class CheckCredentials {
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
         Account loggedInUser = accountRepository.findById(verificationId)
-                .orElseGet(() -> {ErrorHandler.throwError("User Id", Constants.Errors.NOT_FOUND); return null;});
+                .orElseGet(() -> ErrorHandler.throwError("User Id", Constants.Errors.NOT_FOUND));
 
         if(account != loggedInUser) ErrorHandler.throwError(Constants.Errors.DENIED);
     }
@@ -38,9 +38,9 @@ public class CheckCredentials {
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
         Project project = projectRepository.findById(projectId)
-                .orElseGet(() -> {ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND); return null;});
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
         Account loggedInUser = accountRepository.findById(verificationId)
-                .orElseGet(() -> {ErrorHandler.throwError("User Id", Constants.Errors.NOT_FOUND); return null;});
+                .orElseGet(() -> ErrorHandler.throwError("User Id", Constants.Errors.NOT_FOUND));
 
         if(project.getCreator() == loggedInUser) return;
         if(developersAllowed)
@@ -55,7 +55,7 @@ public class CheckCredentials {
     {
         if(verificationId.equals(Constants.ignoreVerification)) return;
         Task task = taskRepository.findById(taskId)
-                .orElseGet(() -> {ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND); return null;});
+                .orElseGet(() -> ErrorHandler.throwError("Task Id", Constants.Errors.NOT_FOUND));
         checkWithProject(verificationId, task.getProject().getId(), developersAllowed);
     }
 
