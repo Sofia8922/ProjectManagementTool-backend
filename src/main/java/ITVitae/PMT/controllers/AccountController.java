@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/accounts")
+@RequestMapping("/{verificationId}/accounts")
 public class AccountController {
     private final AccountService accountService;
 
@@ -30,6 +30,13 @@ public class AccountController {
     {
         AccountDTO created = accountService.createAccount(createDTO);
         return ResponseEntity.status(HttpStatus.OK).body(created);
+    }
+
+    @PostMapping("/{email}/{password}")
+    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
+    {
+        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
+        return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 
     @GetMapping()
@@ -60,16 +67,9 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO)
+    public ResponseEntity<AccountDTO> putAccount(@PathVariable Long id, @Valid @RequestBody AccountEditDTO editDTO, @PathVariable Long verificationId)
     {
-        AccountDTO created = accountService.editAccount(id, editDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(created);
-    }
-
-    @PostMapping("/{email}/{password}")
-    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
-    {
-        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
-        return ResponseEntity.status(HttpStatus.OK).body(account);
+        AccountDTO edited = accountService.editAccount(id, editDTO, verificationId);
+        return ResponseEntity.status(HttpStatus.OK).body(edited);
     }
 }

@@ -24,14 +24,14 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "taskCreator_id")
     private Account taskCreator;
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "task_tag",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "task_assignedDeveloper",
             joinColumns = @JoinColumn(name = "task_id"),
@@ -40,7 +40,6 @@ public class Task {
     private List<Account> assignedDevelopers = new ArrayList<>();
 
     public Task() {
-
     }
 
     public Long getId() {

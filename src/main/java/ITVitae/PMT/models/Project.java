@@ -1,8 +1,10 @@
 package ITVitae.PMT.models;
 
+import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.miscellaneous.DummyData;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +24,14 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "project_developer",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
     private List<Account> developers = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "project_customer",
             joinColumns = @JoinColumn(name = "project_id"),
@@ -67,6 +69,18 @@ public class Project {
 
     public List<Tag> getTags() {
         return tags;
+    }
+
+    @Transactional
+    public boolean isStatusFinished() {
+        if(DummyData.starting) return false;
+        if (tasks.isEmpty()) return false;
+        for (Task task : tasks) {
+            if (!(task.getTaskStatus().equals(Constants.TaskStatus.COMPLETED) ||
+                    task.getTaskStatus().equals(Constants.TaskStatus.SCRAPPED)))
+                return false;
+        }
+        return true;
     }
 
     public boolean isStatusScrapped() {

@@ -3,9 +3,9 @@ package ITVitae.PMT.services;
 import ITVitae.PMT.DTOs.Tag.TagCreateDTO;
 import ITVitae.PMT.DTOs.Tag.TagDTO;
 import ITVitae.PMT.DTOs.Tag.TagEditDTO;
-import ITVitae.PMT.DTOs.Task.TaskDTO;
-import ITVitae.PMT.DTOs.Task.TaskEditDTO;
+import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.models.Tag;
 import ITVitae.PMT.models.Task;
@@ -30,10 +30,11 @@ public class TagService {
         this.projectRepository = projectRepository;
     }
 
-    public TagDTO createTag(TagCreateDTO createDTO) {
+    public TagDTO createTag(TagCreateDTO createDTO, Long userId) {
+        CheckCredentials.checkWithProject(userId, createDTO.projectId(), true);
         Tag tag = createDTO.toEntity();
         Project project = projectRepository.findById(createDTO.projectId())
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
 
         tag.setProject(project);
 
@@ -55,9 +56,10 @@ public class TagService {
     }
 
     @Transactional
-    public TagDTO editTag(Long id, TagEditDTO editDTO) {
+    public TagDTO editTag(Long id, TagEditDTO editDTO, Long userId) {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
+        CheckCredentials.checkWithProject(userId, tag.getProject().getId(), true);
 
         if(!editDTO.name().equals(Constants.noEdit))
             tag.setName(editDTO.name());
@@ -67,11 +69,18 @@ public class TagService {
         return TagDTO.fromEntity(tag);
     }
 
-    public ResponseEntity<String> deleteTag(Long id)
+    public ResponseEntity<String> deleteTag(Long id, Long userId)
     {
-        if(tagRepository.findById(id).isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
-        tagRepository.deleteById(id);
+        Tag tag = tagRepository.findById(id)
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
+        CheckCredentials.checkWithProject(userId, tag.getProject().getId(), true);
+
+        for (Task task : tag.getTasks()) {
+            task.getTags().remove(tag);
+        }
+        tag.getTasks().clear();
+
+        tagRepository.delete(tag);
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }

@@ -10,6 +10,7 @@ public record ProjectShortDTO(
     @NotBlank(message = "Task must have a name")
     String name,
     String description,
+    boolean finishedStatus,
     boolean scrappedStatus
     ){
     public static ProjectShortDTO fromEntity(Project project) {
@@ -17,6 +18,7 @@ public record ProjectShortDTO(
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
+                project.isStatusFinished(),
                 project.isStatusScrapped()
         );
     }
