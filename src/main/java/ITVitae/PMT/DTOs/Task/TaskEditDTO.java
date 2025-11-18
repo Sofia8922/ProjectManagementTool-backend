@@ -4,7 +4,6 @@ import ITVitae.PMT.miscellaneous.Constants;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.Optional;
 
 public record TaskEditDTO(

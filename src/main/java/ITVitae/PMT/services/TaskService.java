@@ -99,7 +99,7 @@ public class TaskService {
                 .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
         List<Tag> existingTags = task.getTags();
         if(existingTags.contains(tag))
-            ErrorHandler.throwError("Tag", Constants.Errors.ALREAD_EXISTS);
+            ErrorHandler.throwError("Tag", Constants.Errors.ALREADY_EXISTS);
         List<Tag> allowedTags = task.getProject().getTags();
         if(!allowedTags.contains(tag))
             ErrorHandler.throwError("Tag", Constants.Errors.WRONG_PROJECT);
@@ -137,7 +137,7 @@ public class TaskService {
         List<Account> existingDevs = task.getAssignedDevelopers();
         for(Account dev : existingDevs)
             if (dev.equals(account))
-                ErrorHandler.throwError("Account", Constants.Errors.ALREAD_EXISTS);
+                ErrorHandler.throwError("Account", Constants.Errors.ALREADY_EXISTS);
         CheckCredentials.checkWithProject(userId, task.getProject().getId(), true);
 
         task.addAssignedDeveloper(account);
