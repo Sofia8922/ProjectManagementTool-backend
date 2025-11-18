@@ -18,6 +18,7 @@ public record ProjectDTO (
     String description,
     List<TagDTO> tags,
     List<TaskShortDTO> tasks,
+    boolean finishedStatus,
     boolean scrappedStatus,
     @NotBlank(message =  "Project must have a creator")
     AccountShortDTO projectCreator,
@@ -31,6 +32,7 @@ public record ProjectDTO (
                 project.getDescription(),
                 project.getTags().stream().map(TagDTO::fromEntity).toList(),
                 project.getTasks().stream().map(TaskShortDTO::fromEntity).toList(),
+                project.isStatusFinished(),
                 project.isStatusScrapped(),
                 AccountShortDTO.fromEntity(project.getCreator()),
                 project.getDevelopers().stream().map(AccountShortDTO::fromEntity).toList(),

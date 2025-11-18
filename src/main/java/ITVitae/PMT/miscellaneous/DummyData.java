@@ -15,6 +15,7 @@ import static ITVitae.PMT.miscellaneous.Constants.UserRole.*;
 
 @Component
 public class DummyData {
+    static public boolean starting;
     private final AccountService accountService;
     private final CommentService commentService;
     private final ProjectService projectService;
@@ -32,6 +33,7 @@ public class DummyData {
 
     @PostConstruct
     public void createDummyData() {
+        starting = true;
         //account
         AccountCreateDTO[] dummyAccounts = {
             new AccountCreateDTO("Amanda@email.com", "Amanda", "1234", OWNER),
@@ -87,6 +89,8 @@ public class DummyData {
             new CommentCreateDTO("How is everybody?", 4L, 1L)
         };
         for (CommentCreateDTO ccd : dummyComments) commentService.createComment(ccd, Constants.ignoreVerification);
+
+        starting = false;
     }
 
 }

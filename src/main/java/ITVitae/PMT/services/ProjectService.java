@@ -10,8 +10,6 @@ import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.miscellaneous.Constants;
-import ITVitae.PMT.models.Tag;
-import ITVitae.PMT.models.Task;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
 import jakarta.transaction.Transactional;
