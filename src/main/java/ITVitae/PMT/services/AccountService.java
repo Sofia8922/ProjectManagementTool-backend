@@ -2,6 +2,7 @@ package ITVitae.PMT.services;
 
 import ITVitae.PMT.DTOs.Account.*;
 import ITVitae.PMT.miscellaneous.CheckCredentials;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.repositories.AccountRepository;
@@ -24,7 +25,7 @@ public class AccountService {
         List<Account> existingAccounts = accountRepository.findAll();
         for(Account existingAccount : existingAccounts)
             if(existingAccount.getEmail().equals(createDTO.email()))
-                throw new RuntimeException("Email already used!");
+                ErrorHandler.throwError("Email", Constants.Errors.ALREAD_EXISTS);
         Account account = createDTO.toEntity();
         Account savedAccount = accountRepository.save(account);
         return AccountDTO.fromEntity(savedAccount);
@@ -45,9 +46,9 @@ public class AccountService {
 
     public List<AccountDTO> findByRoleAndEmail(Constants.UserRole role, String name) {
         List<AccountDTO> allByName =
-                name.isEmpty() ?
-                        findAll() :
-                        accountRepository.findByEmailContainingIgnoreCase(name).stream().map(AccountDTO::fromEntity).toList();
+            name.isEmpty() ?
+                findAll() :
+                accountRepository.findByEmailContainingIgnoreCase(name).stream().map(AccountDTO::fromEntity).toList();
 
         List<AccountDTO> output = new ArrayList<>();
         for(AccountDTO accountDTO : allByName)
@@ -58,16 +59,17 @@ public class AccountService {
 
     public AccountLoginReturnDTO attemptLogin(String email, String password) {
         Account account = accountRepository.findByEmailIgnoreCase(email);
-        if(account == null) throw new RuntimeException("email not found");
+        if(account == null) ErrorHandler.throwError("Email", Constants.Errors.NOT_FOUND);
         AccountPasswordDTO accountPasswordDTO = AccountPasswordDTO.fromEntity(account);
         if(password.equals(accountPasswordDTO.password()))
             return AccountLoginReturnDTO.fromEntity(account);
-        throw new RuntimeException("password doesn't match");
+        ErrorHandler.throwError(Constants.Errors.WRONG_PASSWORD);
+        return null;
     }
 
     public AccountDTO editAccount(Long id, AccountEditDTO editDTO, Long userId) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithId(userId, id);
 
         if(!editDTO.name().equals(Constants.noEdit))

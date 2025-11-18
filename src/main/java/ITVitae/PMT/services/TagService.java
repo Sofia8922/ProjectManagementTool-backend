@@ -5,6 +5,7 @@ import ITVitae.PMT.DTOs.Tag.TagDTO;
 import ITVitae.PMT.DTOs.Tag.TagEditDTO;
 import ITVitae.PMT.miscellaneous.CheckCredentials;
 import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.models.Tag;
 import ITVitae.PMT.models.Task;
@@ -33,7 +34,7 @@ public class TagService {
         CheckCredentials.checkWithProject(userId, createDTO.projectId(), true);
         Tag tag = createDTO.toEntity();
         Project project = projectRepository.findById(createDTO.projectId())
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
 
         tag.setProject(project);
 
@@ -57,7 +58,7 @@ public class TagService {
     @Transactional
     public TagDTO editTag(Long id, TagEditDTO editDTO, Long userId) {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, tag.getProject().getId(), true);
 
         if(!editDTO.name().equals(Constants.noEdit))
@@ -71,7 +72,7 @@ public class TagService {
     public ResponseEntity<String> deleteTag(Long id, Long userId)
     {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Tag Id", Constants.Errors.NOT_FOUND));
         CheckCredentials.checkWithProject(userId, tag.getProject().getId(), true);
 
         for (Task task : tag.getTasks()) {

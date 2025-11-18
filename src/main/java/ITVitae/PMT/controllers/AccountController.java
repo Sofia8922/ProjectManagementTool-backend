@@ -32,6 +32,13 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
+    @PostMapping("/{email}/{password}")
+    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
+    {
+        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
+        return ResponseEntity.status(HttpStatus.OK).body(account);
+    }
+
     @GetMapping()
     public ResponseEntity<List<AccountDTO>> getAllAccounts()
     {
@@ -64,12 +71,5 @@ public class AccountController {
     {
         AccountDTO edited = accountService.editAccount(id, editDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(edited);
-    }
-
-    @PostMapping("/{email}/{password}")
-    public ResponseEntity<AccountLoginReturnDTO> loginAccount(@PathVariable String email, @PathVariable String password)
-    {
-        AccountLoginReturnDTO account = accountService.attemptLogin(email, password);
-        return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 }
