@@ -1,8 +1,10 @@
 package ITVitae.PMT.DTOs.Project;
 
 import ITVitae.PMT.DTOs.Account.AccountShortDTO;
+import ITVitae.PMT.DTOs.Tag.TagDTO;
 import ITVitae.PMT.DTOs.Task.TaskShortDTO;
 import ITVitae.PMT.models.Project;
+import ITVitae.PMT.models.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,7 +16,9 @@ public record ProjectDTO (
     @NotBlank(message = "Project must have a name")
     String name,
     String description,
+    List<TagDTO> tags,
     List<TaskShortDTO> tasks,
+    boolean finishedStatus,
     boolean scrappedStatus,
     @NotBlank(message =  "Project must have a creator")
     AccountShortDTO projectCreator,
@@ -26,7 +30,9 @@ public record ProjectDTO (
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
+                project.getTags().stream().map(TagDTO::fromEntity).toList(),
                 project.getTasks().stream().map(TaskShortDTO::fromEntity).toList(),
+                project.isStatusFinished(),
                 project.isStatusScrapped(),
                 AccountShortDTO.fromEntity(project.getCreator()),
                 project.getDevelopers().stream().map(AccountShortDTO::fromEntity).toList(),

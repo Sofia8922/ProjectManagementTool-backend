@@ -5,11 +5,14 @@ import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
+import ITVitae.PMT.miscellaneous.CheckCredentials;
+import ITVitae.PMT.miscellaneous.ErrorHandler;
 import ITVitae.PMT.models.Account;
 import ITVitae.PMT.models.Project;
 import ITVitae.PMT.miscellaneous.Constants;
 import ITVitae.PMT.repositories.AccountRepository;
 import ITVitae.PMT.repositories.ProjectRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +35,10 @@ public class ProjectService {
     public ProjectDTO createProject(ProjectCreateDTO createDTO) {
         Project project = createDTO.toEntity();
         Account creator = accountRepository.findById(createDTO.creatorId())
-            .orElseThrow(() -> new RuntimeException("Creator id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Creator Id", Constants.Errors.NOT_FOUND));
 
         if(creator.getRole() != Constants.UserRole.OWNER)
-            throw new RuntimeException("Only owners can create projects");
+            ErrorHandler.throwError("Only owners can create projects", Constants.Errors.CUSTOM);
 
         project.setCreator(creator);
 
@@ -83,9 +86,10 @@ public class ProjectService {
         return customers;
     }
 
-    public ProjectDTO editProject(Long id, ProjectEditDTO editDTO) {
+    public ProjectDTO editProject(Long id, ProjectEditDTO editDTO, Long userId) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project id not found"));
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
+        CheckCredentials.checkWithId(userId, project.getCreator().getId());
 
         if(!editDTO.name().equals(Constants.noEdit))
             project.setName(editDTO.name());
@@ -95,11 +99,59 @@ public class ProjectService {
         return ProjectDTO.fromEntity(project);
     }
 
-    public ResponseEntity<String> deleteProject(Long id)
+    public ResponseEntity<String> deleteProject(Long id, Long userId)
     {
         if(projectRepository.findById(id).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        CheckCredentials.checkWithProject(userId, id, false);
         projectRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @Transactional
+    public ResponseEntity<String> addAccount(Long projectId, Long accountId, Long userId)
+    {
+        CheckCredentials.checkWithProject(userId, projectId, false);
+        Project project = projectRepository.findById(projectId)
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
+        Account account = accountRepository.findById(accountId)
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
+        List<Account> existingDevs = project.getDevelopers();
+        for(Account dev : existingDevs)
+            if (dev.equals(account))
+                ErrorHandler.throwError("Developer", Constants.Errors.ALREAD_EXISTS);
+        List<Account> existingCustomer = project.getCustomers();
+        for(Account dev : existingCustomer)
+            if (dev.equals(account))
+                ErrorHandler.throwError("Customer", Constants.Errors.ALREAD_EXISTS);
+
+        if(account.getRole() == Constants.UserRole.OWNER)
+            ErrorHandler.throwError("Account must be a developer or customer!", Constants.Errors.CUSTOM);
+
+        if(account.getRole() == Constants.UserRole.DEVELOPER) {
+            project.addDeveloper(account);
+        }
+        else
+        {
+            project.addCustomer(account);
+        }
+        projectRepository.save(project);
+
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    public ResponseEntity<String> removeAccount(Long projectId, Long tagId, Long userId)
+    {
+        CheckCredentials.checkWithProject(userId, projectId, false);
+        Project project = projectRepository.findById(projectId)
+                .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
+        Account account = accountRepository.findById(tagId)
+                .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
+
+        project.removeDeveloper(account);
+        project.removeCustomer(account);
+        projectRepository.save(project);
+
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }

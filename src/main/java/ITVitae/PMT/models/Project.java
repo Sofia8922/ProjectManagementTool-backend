@@ -1,8 +1,10 @@
 package ITVitae.PMT.models;
 
+import ITVitae.PMT.miscellaneous.Constants;
+import ITVitae.PMT.miscellaneous.DummyData;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +18,20 @@ public class Project {
     private String description;
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
-    //tags
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Tag> tags = new ArrayList<>();
     private boolean scrappedStatus;
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "project_developer",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
     private List<Account> developers = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "project_customer",
             joinColumns = @JoinColumn(name = "project_id"),
@@ -64,6 +67,22 @@ public class Project {
         return tasks;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    @Transactional
+    public boolean isStatusFinished() {
+        if(DummyData.starting) return false;
+        if (tasks.isEmpty()) return false;
+        for (Task task : tasks) {
+            if (!(task.getTaskStatus().equals(Constants.TaskStatus.COMPLETED) ||
+                    task.getTaskStatus().equals(Constants.TaskStatus.SCRAPPED)))
+                return false;
+        }
+        return true;
+    }
+
     public boolean isStatusScrapped() {
         return scrappedStatus;
     }
@@ -84,7 +103,15 @@ public class Project {
         return developers;
     }
 
+    public void addDeveloper(Account account) { developers.add(account); }
+
+    public void removeDeveloper(Account account) { developers.remove(account); }
+
     public List<Account> getCustomers() {
         return customers;
     }
+
+    public void addCustomer(Account account) { customers.add(account); }
+
+    public void removeCustomer(Account account) { customers.remove(account); }
 }
