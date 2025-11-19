@@ -1,7 +1,6 @@
 package ITVitae.PMT.DTOs.Project;
 
 import ITVitae.PMT.miscellaneous.Constants;
-import ITVitae.PMT.models.Project;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -27,12 +26,4 @@ public record ProjectEditDTO(
                 Optional.empty() :
                 Optional.of(Boolean.valueOf(scrappedStr));
     }
-
-//    public Project toEntity() {
-//        Project project = new Project();
-//        project.setName(name);
-//        project.setDescription(description);
-//        project.setStatusScrapped(scrapped);
-//        return project;
-//    }
 }
