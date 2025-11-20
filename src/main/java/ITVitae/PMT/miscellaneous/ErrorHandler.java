@@ -1,6 +1,5 @@
 package ITVitae.PMT.miscellaneous;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,7 +23,7 @@ public class ErrorHandler {
                 return HttpStatus.NOT_FOUND;
             case WRONG_PASSWORD:
             case DENIED:
-            case ALREAD_EXISTS:
+            case ALREADY_EXISTS:
                 return HttpStatus.FORBIDDEN;
             default:
                 return HttpStatus.INTERNAL_SERVER_ERROR;

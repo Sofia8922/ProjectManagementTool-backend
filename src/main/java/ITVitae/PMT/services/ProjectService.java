@@ -86,6 +86,7 @@ public class ProjectService {
         return customers;
     }
 
+    @Transactional
     public ProjectDTO editProject(Long id, ProjectEditDTO editDTO, Long userId) {
         Project project = projectRepository.findById(id)
                 .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
@@ -95,6 +96,8 @@ public class ProjectService {
             project.setName(editDTO.name());
         if(!editDTO.description().equals(Constants.noEdit))
             project.setDescription(editDTO.description());
+        if(!editDTO.scrapped().isEmpty())
+            project.setStatusScrapped(editDTO.scrapped().get());
         projectRepository.save(project);
         return ProjectDTO.fromEntity(project);
     }
@@ -119,11 +122,11 @@ public class ProjectService {
         List<Account> existingDevs = project.getDevelopers();
         for(Account dev : existingDevs)
             if (dev.equals(account))
-                ErrorHandler.throwError("Developer", Constants.Errors.ALREAD_EXISTS);
+                ErrorHandler.throwError("Developer", Constants.Errors.ALREADY_EXISTS);
         List<Account> existingCustomer = project.getCustomers();
         for(Account dev : existingCustomer)
             if (dev.equals(account))
-                ErrorHandler.throwError("Customer", Constants.Errors.ALREAD_EXISTS);
+                ErrorHandler.throwError("Customer", Constants.Errors.ALREADY_EXISTS);
 
         if(account.getRole() == Constants.UserRole.OWNER)
             ErrorHandler.throwError("Account must be a developer or customer!", Constants.Errors.CUSTOM);
