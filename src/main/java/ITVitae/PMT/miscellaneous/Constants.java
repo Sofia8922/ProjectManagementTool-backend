@@ -8,7 +8,7 @@ public class Constants {
     public enum Colour { RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, WHITE, BLACK}
     public enum Errors { DENIED("Denied"),
         NOT_FOUND(" not found"),
-        ALREAD_EXISTS(" already added"),
+        ALREADY_EXISTS(" already added"),
         WRONG_PASSWORD("Wrong password"),
         WRONG_PROJECT(" no part of project"),
         CUSTOM("");
