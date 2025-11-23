@@ -21,9 +21,11 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
     private boolean scrappedStatus;
+
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
+
     @ManyToMany()
     @JoinTable(
             name = "project_developer",
@@ -31,6 +33,7 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
     private List<Account> developers = new ArrayList<>();
+
     @ManyToMany()
     @JoinTable(
             name = "project_customer",

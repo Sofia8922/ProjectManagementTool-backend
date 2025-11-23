@@ -1,6 +1,8 @@
 package ITVitae.PMT.miscellaneous;
 
 import ITVitae.PMT.DTOs.Account.AccountCreateDTO;
+import ITVitae.PMT.DTOs.Account.AccountDTO;
+import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Comment.CommentCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectCreateDTO;
 import ITVitae.PMT.DTOs.Project.ProjectEditDTO;
@@ -11,6 +13,8 @@ import ITVitae.PMT.services.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 import static ITVitae.PMT.miscellaneous.Constants.UserRole.*;
 
@@ -54,10 +58,10 @@ public class DummyData {
         };
         for (ProjectCreateDTO pcd : dummyProjects) projectService.createProject(pcd);
         ProjectEditDTO[] editDummyProjects = {
-                new ProjectEditDTO("#", "#", "#"),
-                new ProjectEditDTO("#", "#", "#"),
-                new ProjectEditDTO("#", "#", "#"),
-                new ProjectEditDTO("#", "#", "true")
+                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
+                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
+                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
+                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>())
         };
         Long index = 1L;
         for (ProjectEditDTO ped : editDummyProjects) {

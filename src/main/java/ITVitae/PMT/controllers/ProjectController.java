@@ -66,9 +66,9 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDTO> putProject(@PathVariable Long id, @Valid @RequestBody ProjectEditDTO createDTO, @PathVariable Long verificationId)
+    public ResponseEntity<ProjectDTO> putProject(@PathVariable Long id, @Valid @RequestBody ProjectEditDTO editDTO, @PathVariable Long verificationId)
     {
-        ProjectDTO created = projectService.editProject(id, createDTO, verificationId);
+        ProjectDTO created = projectService.editProject(id, editDTO, verificationId);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
