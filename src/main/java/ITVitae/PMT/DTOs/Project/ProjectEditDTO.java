@@ -5,6 +5,8 @@ import ITVitae.PMT.miscellaneous.Constants;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +22,11 @@ public record ProjectEditDTO(
     public ProjectEditDTO(
         @JsonProperty("name") String name,
         @JsonProperty("description") String description,
-        @JsonProperty("scrapped") String scrappedStr,
+        @JsonProperty("scrapped") boolean scrappedStr,
         @JsonProperty("projectDevelopers") List<AccountShortDTO> projectDevelopers,
         @JsonProperty("projectCustomers") List<AccountShortDTO> projectCustomers
     ) {
-        this(name, description, parseBool(scrappedStr), projectDevelopers, projectCustomers);
+        this(name, description, parseBool(String.valueOf(scrappedStr)), projectDevelopers, projectCustomers);
     }
 
     private static Optional<Boolean> parseBool(String scrappedStr) {

@@ -58,10 +58,10 @@ public class DummyData {
         };
         for (ProjectCreateDTO pcd : dummyProjects) projectService.createProject(pcd);
         ProjectEditDTO[] editDummyProjects = {
-                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
-                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
-                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
-                new ProjectEditDTO("#", "#", "true", new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>())
+                new ProjectEditDTO("#", "#", false, new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
+                new ProjectEditDTO("#", "#", false, new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
+                new ProjectEditDTO("#", "#", false, new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>()),
+                new ProjectEditDTO("#", "#", true, new ArrayList<AccountShortDTO>(), new ArrayList<AccountShortDTO>())
         };
         Long index = 1L;
         for (ProjectEditDTO ped : editDummyProjects) {

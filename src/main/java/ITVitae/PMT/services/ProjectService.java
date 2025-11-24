@@ -98,19 +98,27 @@ public class ProjectService {
             project.setDescription(editDTO.description());
         if (!editDTO.scrapped().isEmpty())
             project.setStatusScrapped(editDTO.scrapped().get());
+
+        //itterate over de editDTO.developers array heen en zoek ze in de repo op ID,
+        // voeg die dan meteen toe aan een tijdelijke array [developersToSet]
+        // en set deze array als developers in het project
+        List<Account> developersToSet = new ArrayList<>();
         for (AccountShortDTO account : editDTO.projectDevelopers()) {
             if (accountRepository.findById(account.id()).isPresent()) {
                 Account dev = accountRepository.findById(account.id()).get();
-                project.addDeveloper(dev);
+                developersToSet.add(dev);
             }
         }
+        project.setDevelopers(developersToSet);
 
+        List<Account> customersToSet = new ArrayList<>();
         for (AccountShortDTO account : editDTO.projectCustomers()) {
             if (accountRepository.findById(account.id()).isPresent()) {
                 Account client = accountRepository.findById(account.id()).get();
-                project.addCustomer(client);
+                customersToSet.add(client);
             }
         }
+        project.setCustomers(customersToSet);
 
         projectRepository.save(project);
         return ProjectDTO.fromEntity(project);

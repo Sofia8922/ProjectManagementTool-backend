@@ -106,6 +106,14 @@ public class Project {
         return developers;
     }
 
+    public void setDevelopers(List<Account> developers) {
+        this.developers = developers;
+    }
+
+    public void setCustomers(List<Account> customers) {
+        this.customers = customers;
+    }
+
     public void addDeveloper(Account account) { developers.add(account); }
 
     public void removeDeveloper(Account account) { developers.remove(account); }
