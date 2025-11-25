@@ -4,7 +4,6 @@ import ITVitae.PMT.DTOs.Account.AccountShortDTO;
 import ITVitae.PMT.DTOs.Tag.TagDTO;
 import ITVitae.PMT.DTOs.Task.TaskShortDTO;
 import ITVitae.PMT.models.Project;
-import ITVitae.PMT.models.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,8 +21,8 @@ public record ProjectDTO (
     boolean scrappedStatus,
     @NotBlank(message =  "Project must have a creator")
     AccountShortDTO projectCreator,
-    List<AccountShortDTO> developers,
-    List<AccountShortDTO> customers
+    List<AccountShortDTO> projectDevelopers,
+    List<AccountShortDTO> projectCustomers
     ){
     public static ProjectDTO fromEntity(Project project) {
         return new ProjectDTO(
@@ -35,8 +34,8 @@ public record ProjectDTO (
                 project.isStatusFinished(),
                 project.isStatusScrapped(),
                 AccountShortDTO.fromEntity(project.getCreator()),
-                project.getDevelopers().stream().map(AccountShortDTO::fromEntity).toList(),
-                project.getCustomers().stream().map(AccountShortDTO::fromEntity).toList()
+                project.getProjectDevelopers().stream().map(AccountShortDTO::fromEntity).toList(),
+                project.getProjectCustomers().stream().map(AccountShortDTO::fromEntity).toList()
         );
     }
 }

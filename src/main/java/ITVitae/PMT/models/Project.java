@@ -32,7 +32,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
-    private List<Account> developers = new ArrayList<>();
+    private List<Account> projectDevelopers = new ArrayList<>();
 
     @ManyToMany()
     @JoinTable(
@@ -40,7 +40,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "customer_id")
     )
-    private List<Account> customers = new ArrayList<>();
+    private List<Account> projectCustomers = new ArrayList<>();
 
     public Project() {
 
@@ -102,27 +102,27 @@ public class Project {
         this.projectCreator = creator;
     }
 
-    public List<Account> getDevelopers() {
-        return developers;
+    public List<Account> getProjectDevelopers() {
+        return projectDevelopers;
     }
 
-    public void setDevelopers(List<Account> developers) {
-        this.developers = developers;
+    public void setProjectDevelopers(List<Account> projectDevelopers) {
+        this.projectDevelopers = projectDevelopers;
     }
 
-    public void setCustomers(List<Account> customers) {
-        this.customers = customers;
+    public void setProjectCustomers(List<Account> projectCustomers) {
+        this.projectCustomers = projectCustomers;
     }
 
-    public void addDeveloper(Account account) { developers.add(account); }
+    public void addDeveloper(Account account) { projectDevelopers.add(account); }
 
-    public void removeDeveloper(Account account) { developers.remove(account); }
+    public void removeDeveloper(Account account) { projectDevelopers.remove(account); }
 
-    public List<Account> getCustomers() {
-        return customers;
+    public List<Account> getProjectCustomers() {
+        return projectCustomers;
     }
 
-    public void addCustomer(Account account) { customers.add(account); }
+    public void addCustomer(Account account) { projectCustomers.add(account); }
 
-    public void removeCustomer(Account account) { customers.remove(account); }
+    public void removeCustomer(Account account) { projectCustomers.remove(account); }
 }

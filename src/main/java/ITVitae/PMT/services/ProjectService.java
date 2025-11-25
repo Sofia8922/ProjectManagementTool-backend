@@ -69,7 +69,7 @@ public class ProjectService {
     public List<AccountDTO> findProjectDevelopers(Long id) {
         ProjectDTO projectDTO = findById(id);
         List<AccountDTO> developers = new ArrayList<>();
-        for (AccountShortDTO developerDTO : projectDTO.developers()) {
+        for (AccountShortDTO developerDTO : projectDTO.projectDevelopers()) {
             Account developer = accountRepository.findById(developerDTO.id()).get();
             developers.add(AccountDTO.fromEntity(developer));
         }
@@ -79,8 +79,8 @@ public class ProjectService {
     public List<AccountDTO> findProjectCustomers(Long id) {
         ProjectDTO projectDTO = findById(id);
         List<AccountDTO> customers = new ArrayList<>();
-        for (AccountShortDTO developerDTO : projectDTO.customers()) {
-            Account customer = accountRepository.findById(developerDTO.id()).get();
+        for (AccountShortDTO customerDTO : projectDTO.projectCustomers()) {
+            Account customer = accountRepository.findById(customerDTO.id()).get();
             customers.add(AccountDTO.fromEntity(customer));
         }
         return customers;
@@ -109,7 +109,7 @@ public class ProjectService {
                 developersToSet.add(dev);
             }
         }
-        project.setDevelopers(developersToSet);
+        project.setProjectDevelopers(developersToSet);
 
         List<Account> customersToSet = new ArrayList<>();
         for (AccountShortDTO account : editDTO.projectCustomers()) {
@@ -118,7 +118,7 @@ public class ProjectService {
                 customersToSet.add(client);
             }
         }
-        project.setCustomers(customersToSet);
+        project.setProjectCustomers(customersToSet);
 
         projectRepository.save(project);
         return ProjectDTO.fromEntity(project);
@@ -139,11 +139,11 @@ public class ProjectService {
                 .orElseGet(() -> ErrorHandler.throwError("Project Id", Constants.Errors.NOT_FOUND));
         Account account = accountRepository.findById(accountId)
                 .orElseGet(() -> ErrorHandler.throwError("Account Id", Constants.Errors.NOT_FOUND));
-        List<Account> existingDevs = project.getDevelopers();
+        List<Account> existingDevs = project.getProjectDevelopers();
         for (Account dev : existingDevs)
             if (dev.equals(account))
                 ErrorHandler.throwError("Developer", Constants.Errors.ALREADY_EXISTS);
-        List<Account> existingCustomer = project.getCustomers();
+        List<Account> existingCustomer = project.getProjectCustomers();
         for (Account dev : existingCustomer)
             if (dev.equals(account))
                 ErrorHandler.throwError("Customer", Constants.Errors.ALREADY_EXISTS);

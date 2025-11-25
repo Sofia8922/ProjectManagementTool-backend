@@ -44,7 +44,7 @@ public class CheckCredentials {
 
         if(project.getCreator() == loggedInUser) return;
         if(developersAllowed)
-            for(Account developer : project.getDevelopers())
+            for(Account developer : project.getProjectDevelopers())
                 if(developer.equals(loggedInUser)) return;
 
         ErrorHandler.throwError(Constants.Errors.DENIED);
