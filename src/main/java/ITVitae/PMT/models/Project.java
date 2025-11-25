@@ -21,23 +21,26 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
     private boolean scrappedStatus;
+
     @ManyToOne
     @JoinColumn(name = "projectCreator_id")
     private Account projectCreator;
+
     @ManyToMany()
     @JoinTable(
             name = "project_developer",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
-    private List<Account> developers = new ArrayList<>();
+    private List<Account> projectDevelopers = new ArrayList<>();
+
     @ManyToMany()
     @JoinTable(
             name = "project_customer",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "customer_id")
     )
-    private List<Account> customers = new ArrayList<>();
+    private List<Account> projectCustomers = new ArrayList<>();
 
     public Project() {
 
@@ -99,19 +102,27 @@ public class Project {
         this.projectCreator = creator;
     }
 
-    public List<Account> getDevelopers() {
-        return developers;
+    public List<Account> getProjectDevelopers() {
+        return projectDevelopers;
     }
 
-    public void addDeveloper(Account account) { developers.add(account); }
-
-    public void removeDeveloper(Account account) { developers.remove(account); }
-
-    public List<Account> getCustomers() {
-        return customers;
+    public void setProjectDevelopers(List<Account> projectDevelopers) {
+        this.projectDevelopers = projectDevelopers;
     }
 
-    public void addCustomer(Account account) { customers.add(account); }
+    public void setProjectCustomers(List<Account> projectCustomers) {
+        this.projectCustomers = projectCustomers;
+    }
 
-    public void removeCustomer(Account account) { customers.remove(account); }
+    public void addDeveloper(Account account) { projectDevelopers.add(account); }
+
+    public void removeDeveloper(Account account) { projectDevelopers.remove(account); }
+
+    public List<Account> getProjectCustomers() {
+        return projectCustomers;
+    }
+
+    public void addCustomer(Account account) { projectCustomers.add(account); }
+
+    public void removeCustomer(Account account) { projectCustomers.remove(account); }
 }

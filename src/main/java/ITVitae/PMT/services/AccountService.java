@@ -24,8 +24,8 @@ public class AccountService {
     public AccountDTO createAccount(AccountCreateDTO createDTO) {
         List<Account> existingAccounts = accountRepository.findAll();
         for(Account existingAccount : existingAccounts)
-            if(existingAccount.getEmail().equals(createDTO.email()))
-                ErrorHandler.throwError("Email", Constants.Errors.ALREAD_EXISTS);
+            if(existingAccount.getEmail().equalsIgnoreCase(createDTO.email()))
+                ErrorHandler.throwError("Email", Constants.Errors.ALREADY_EXISTS);
         Account account = createDTO.toEntity();
         Account savedAccount = accountRepository.save(account);
         return AccountDTO.fromEntity(savedAccount);

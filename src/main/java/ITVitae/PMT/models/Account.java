@@ -18,10 +18,10 @@ public class Account {
     private String email;
     @NotBlank
     private String password;
-    @ManyToMany(mappedBy = "developers")
-    private List<Project> developers = new ArrayList<>();
-    @ManyToMany(mappedBy = "customers")
-    private List<Project> customers= new ArrayList<>();
+    @ManyToMany(mappedBy = "projectDevelopers")
+    private List<Project> projcetDevelopers = new ArrayList<>();
+    @ManyToMany(mappedBy = "projectCustomers")
+    private List<Project> projectCustomers = new ArrayList<>();
     @NotNull
     private Constants.UserRole role;
     @ManyToMany(mappedBy = "assignedDevelopers")
