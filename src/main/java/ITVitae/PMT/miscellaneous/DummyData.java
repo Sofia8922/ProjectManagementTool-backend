@@ -46,7 +46,19 @@ public class DummyData {
                 new AccountCreateDTO("Chris@email.com", "Chris", "1234", DEVELOPER),
                 new AccountCreateDTO("Dara@email.com", "Dara", "1234", DEVELOPER),
                 new AccountCreateDTO("Emil@email.com", "Emil", "1234", CUSTOMER),
-                new AccountCreateDTO("Fenna@email.com", "Fenna", "1234", OWNER)
+                new AccountCreateDTO("Fenna@email.com", "Fenna", "1234", OWNER),
+                new AccountCreateDTO("Gerard@email.com", "Gerard", "1234", CUSTOMER),
+                new AccountCreateDTO("Hans@email.com", "Hans", "1234", CUSTOMER),
+                new AccountCreateDTO("Iris@email.com", "Iris", "1234", CUSTOMER),
+                new AccountCreateDTO("Jess@email.com", "Jess", "1234", CUSTOMER),
+                new AccountCreateDTO("Karl@email.com", "Karl", "1234", DEVELOPER),
+                new AccountCreateDTO("Leah@email.com", "Leah", "1234", DEVELOPER),
+                new AccountCreateDTO("Mark@email.com", "Mark", "1234", DEVELOPER),
+                new AccountCreateDTO("Nico@email.com", "Nico", "1234", DEVELOPER),
+                new AccountCreateDTO("Olga@email.com", "Olga", "1234", CUSTOMER),
+                new AccountCreateDTO("Pam@email.com", "Pam", "1234", CUSTOMER),
+                new AccountCreateDTO("Quinten@email.com", "Quinten", "1234", CUSTOMER),
+                new AccountCreateDTO("Ryan@email.com", "Ryan", "1234", CUSTOMER)
         };
         for (AccountCreateDTO acd : dummyAccounts) accountService.createAccount(acd);
         //projects
@@ -71,6 +83,11 @@ public class DummyData {
         projectService.addAccount(1L, 2L, Constants.ignoreVerification);
         projectService.addAccount(1L, 3L, Constants.ignoreVerification);
         projectService.addAccount(1L, 5L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 7L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 8L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 9L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 10L, Constants.ignoreVerification);
+        projectService.addAccount(1L, 11L, Constants.ignoreVerification);
         projectService.addAccount(2L, 4L, Constants.ignoreVerification);
         //tags
         TagCreateDTO[] dummytags = {
@@ -86,6 +103,10 @@ public class DummyData {
                 new TaskCreateDTO("main page", "", 3L, 1L),
                 new TaskCreateDTO("sell form", "don't forget the discount", 4L, 1L),
                 new TaskCreateDTO("FAQ", "just a basic FAQ page", 3L, 1L),
+                new TaskCreateDTO("log in page", "", 3L, 1L),
+                new TaskCreateDTO("ads", "", 3L, 1L),
+                new TaskCreateDTO("dark mode", "Low priority", 3L, 1L),
+                new TaskCreateDTO("overview", "", 3L, 1L),
                 new TaskCreateDTO("Squid", "you know", 6L, 3L),
                 new TaskCreateDTO("Window", "", 6L, 4L),
                 new TaskCreateDTO("Brakes", "", 6L, 4L),
@@ -116,10 +137,14 @@ public class DummyData {
         taskService.addTag(2L, 2L, Constants.ignoreVerification);
         //comments
         CommentCreateDTO[] dummyComments = {
-            new CommentCreateDTO("Good morning", 1L, 2L),
-            new CommentCreateDTO("Hello", 3L, 1L),
-            new CommentCreateDTO("Good day", 4L, 1L),
-            new CommentCreateDTO("How is everybody?", 4L, 1L)
+                new CommentCreateDTO("Good morning", 1L, 2L),
+                new CommentCreateDTO("Hello", 3L, 1L),
+                new CommentCreateDTO("Good day", 4L, 1L),
+                new CommentCreateDTO("How is everybody?", 4L, 1L),
+                new CommentCreateDTO("Quick reminder: the meeting is on Tuesday", 1L, 1L),
+                new CommentCreateDTO("Be there", 1L, 1L),
+                new CommentCreateDTO("8:45", 1L, 1L),
+                new CommentCreateDTO("In my office", 1L, 1L)
         };
         for (CommentCreateDTO ccd : dummyComments) commentService.createComment(ccd, Constants.ignoreVerification);
 
